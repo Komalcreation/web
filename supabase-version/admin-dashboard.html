@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Administration Ledger - Komal Creations</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- SECURITY CHECK FIREWALL - SECURES THE ENTIRE PROTECTED PAGE -->
+  <script type="module" src="js/auth-guard.js"></script>
+</head>
+<body>
+
+  <!-- Dashboard Navigation header -->
+  <header>
+    <div class="navbar bg-primary-green">
+      <a href="index.html" class="logo-container">
+        <div class="logo-crest bg-accent-maroon">KC</div>
+        <div class="logo-text">
+          <h1 data-en="Komal Creations Staff" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਡਮਿਨ">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਡਮਿਨ</h1>
+          <p data-en="Ledger Database System" data-pa="ਕਲਾਊਡ ਲੈਜਰ ਸਿਸਟਮ">ਕਲਾਊਡ ਲੈਜਰ ਸਿਸਟਮ</p>
+        </div>
+      </a>
+
+      <!-- Quick Language and System controllers -->
+      <div style="display:flex; align-items:center; gap:1rem;">
+         <button class="lang-switch-btn" id="lang-switch-btn">🌐 English</button>
+         <button class="nav-action-btn bg-accent-maroon" id="btn-admin-logout" data-en="Sign Out" data-pa="ਬਾਹਰ ਜਾਓ">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-dashboard-container">
+     <div class="admin-dashboard-header">
+        <div>
+           <h2 class="font-serif text-2xl text-green-900" data-en="Staff Administrative Ledger" data-pa="ਸੈਂਟਰ ਮੈਨੇਜਮੈਂਟ ਕੰਟਰੋਲ">ਸੈਂਟਰ ਮੈਨੇਜਮੈਂਟ ਕੰਟਰੋਲ</h2>
+           <p class="text-xs text-slate-500" data-en="Monitor active courses, edit class registrations, manage student fee books & print verified certificates." data-pa="ਇੱਥੋਂ ਫੀਸ ਬੁੱਕ ਅਪਡੇਟ ਕਰੋ, ਵਿਦਿਆਰਥੀਆਂ ਦੇ ਦਾਖਲੇ ਦੇਖੋ, ਗੈਲਰੀ ਬਦਲੋ ਅਤੇ ਸਰਟੀਫਿਕੇਟ ਜਾਰੀ ਕਰੋ।">Monitor active courses, edit class registrations, manage student fee books & print verified certificates.</p>
+        </div>
+     </div>
+
+     <!-- Admin tabs menu -->
+     <ul class="admin-nav-tabs">
+        <li><button class="admin-tab-btn active" data-tab="summary">📁 <span data-en="Metrics Summary" data-pa="ਸਾਰਾਂਸ਼">Summary</span></button></li>
+        <li><button class="admin-tab-btn" data-tab="students">👩‍🎓 <span data-en="Students Directory" data-pa="ਵਿਦਿਆਰਥੀ">Students</span></button></li>
+        <li><button class="admin-tab-btn" data-tab="enrollments">📝 <span data-en="Enrollment Sheets" data-pa="ਦਾਖਲੇ ਰਿਕਾਰਡ">Enrollments</span></button></li>
+        <li><button class="admin-tab-btn" data-tab="courses">📐 <span data-en="Syllabus Courses" data-pa="ਸਿਲੇਬਸ ਕੋਰਸ">Courses</span></button></li>
+        <li><button class="admin-tab-btn" data-tab="certificates">🎖️ <span data-en="Issue Certificates" data-pa="Verify ਸਰਟੀਫਿਕੇਟ">Certificates</span></button></li>
+        <li><button class="admin-tab-btn" data-tab="gallery">🖼️ <span data-en="Boutique Gallery" data-pa="ਗੈਲਰੀ ਤਸਵੀਰ">Gallery</span></button></li>
+        <li><button class="admin-tab-btn" data-tab="messages">✉️ <span data-en="Inquiry Logs" data-pa="ਸੁਨੇਹੇ">Messages</span></button></li>
+     </ul>
+
+     <!-- Central Stats Metric cards -->
+     <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+           <div class="admin-stat-icon">👩‍🎓</div>
+           <div>
+              <div class="admin-stat-val" id="stat-student-count">0</div>
+              <div class="admin-stat-label" data-en="Students" data-pa="ਸਿਖਿਆਰਥੀ">Students</div>
+           </div>
+        </div>
+        <div class="admin-stat-card">
+           <div class="admin-stat-icon">📝</div>
+           <div>
+              <div class="admin-stat-val" id="stat-enrollment-count">0</div>
+              <div class="admin-stat-label" data-en="Active Sheets" data-pa="ਕੋਰਸ ਸੀਟ">Active Sheets</div>
+           </div>
+        </div>
+        <div class="admin-stat-card">
+           <div class="admin-stat-icon">📐</div>
+           <div>
+              <div class="admin-stat-val" id="stat-course-count">0</div>
+              <div class="admin-stat-label" data-en="Active Courses" data-pa="ਕੋਰਸ">Active Courses</div>
+           </div>
+        </div>
+        <div class="admin-stat-card">
+           <div class="admin-stat-icon">🎖️</div>
+           <div>
+              <div class="admin-stat-val" id="stat-certificates-count">0</div>
+              <div class="admin-stat-label" data-en="Awarded Grad" data-pa="ਪਾਸ-ਆਊਟ">Awarded Grad</div>
+           </div>
+        </div>
+        <div class="admin-stat-card">
+           <div class="admin-stat-icon">✉️</div>
+           <div>
+              <div class="admin-stat-val" id="stat-message-count">0</div>
+              <div class="admin-stat-label" data-en="Inquiry Logs" data-pa="ਸੁਨੇਹੇ">Inquiry Logs</div>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 1: SUMMARY ====================== -->
+     <div id="pane-summary" class="admin-section-pane">
+        <div class="admin-panel-box">
+           <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1rem;" data-en="Recent Course Registrations" data-pa="ਨਵੇਂ ਦਾਖਲਾ ਫਾਰਮ ਸ਼ੀਟ">Recent Course Registrations</h3>
+           <div class="table-wrapper">
+              <table class="admin-table">
+                 <thead>
+                    <tr>
+                       <th data-en="Student Name" data-pa="ਵਿਦਿਆਰਥੀ ਦਾ ਨਾਮ">Student Name</th>
+                       <th data-en="Curriculum Class" data-pa="ਕੋਰਸ ਨਾਮ">Curriculum Class</th>
+                       <th data-en="Registration Date" data-pa="ਦਾਖਲਾ ਤਾਰੀਖ">Registration Date</th>
+                       <th data-en="Billing Status" data-pa="ਫੀਸ ਸਥਿਤੀ">Billing Status</th>
+                       <th data-en="Class Status" data-pa="ਕਲਾਸ ਸਥਿਤੀ">Class Status</th>
+                    </tr>
+                 </thead>
+                 <tbody id="summary-recent-table">
+                    <!-- Loaded dynamically -->
+                 </tbody>
+              </table>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 2: STUDENTS ====================== -->
+     <div id="pane-students" class="admin-section-pane" style="display:none;">
+        <div class="contact-layout">
+           <!-- Left block: Add Student profile -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="New Student Intake Form" data-pa="ਨਵਾਂ ਵਿਦਿਆਰਥੀ ਸ਼ਾਮਲ ਕਰੋ">New Student Intake Form</h3>
+              <form id="admin-student-form">
+                 <div class="form-group">
+                    <label class="form-label" for="student-name" data-en="FULL LEGAL NAME" data-pa="ਵਿਦਿਆਰਥੀ ਦਾ ਨਾਮ">FULL LEGAL NAME</label>
+                    <input type="text" class="form-control" id="student-name" required />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label" for="student-phone" data-en="WHATSAPP PHONE" data-pa="ਮੋਬਾਈਲ (ਵਟਸਐਪ)">WHATSAPP PHONE</label>
+                    <input type="tel" class="form-control" id="student-phone" required />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label" for="student-email" data-en="EMAIL ADDRESS (OPTIONAL)" data-pa="ਈਮੇਲ ID">EMAIL ADDRESS (OPTIONAL)</label>
+                    <input type="email" class="form-control" id="student-email" />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label" for="student-address" data-en="POSTAL HOME ADDRESS" data-pa="ਪੂਰਾ ਪਤਾ (Residential Address)">POSTAL HOME ADDRESS</label>
+                    <input type="text" class="form-control" id="student-address" required />
+                 </div>
+                 <button type="submit" class="btn btn-primary w-full" style="width:100px;" data-en="ADD PROFILE" data-pa="ਸੇਵ ਕਰੋ">ADD PROFILE</button>
+              </form>
+           </div>
+
+           <!-- Right block: Student Lists -->
+           <div class="admin-panel-box">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+                 <h3 class="font-serif text-lg text-green-900" data-en="Registered Students" data-pa="ਵਿਦਿਆਰਥੀਆਂ ਦੀ ਲਿਸਟ">Registered Students</h3>
+                 <input type="text" class="form-control" id="admin-student-search" data-placeholder-en="Search by name, phone or town..." data-placeholder-pa="ਨਾਮ, ਫ਼ੋਨ ਜਾਂ ਪਤੇ ਨਾਲ ਸਰਚ ਕਰੋ..." placeholder="Search list..." style="width:250px;" />
+              </div>
+              <div class="table-wrapper">
+                 <table class="admin-table">
+                    <thead>
+                       <tr>
+                          <th data-en="Student Name" data-pa="ਨਾਮ">Student Name</th>
+                          <th data-en="Phone Line" data-pa="ਫ਼ੋਨ ਨੰਬਰ">Phone Line</th>
+                          <th data-en="Address" data-pa=" residencial ਪਤਾ">Address</th>
+                          <th data-en="Email" data-pa="ਈਮੇਲ">Email</th>
+                          <th data-en="Actions" data-pa="ਹਟਾਓ">Actions</th>
+                       </tr>
+                    </thead>
+                    <tbody id="students-list-table">
+                       <!-- Loaded dynamically -->
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 3: ENROLLMENTS ====================== -->
+     <div id="pane-enrollments" class="admin-section-pane" style="display:none;">
+        <div class="contact-layout">
+           <!-- Left side: Manual Enrollment linking -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Assigned Enrollment Course" data-pa="ਵਿਦਿਆਰਥੀ ਨੂੰ ਕੋਰਸ ਅਲਾਟ ਕਰੋ">Assigned Enrollment Course</h3>
+              <form id="admin-manual-enrollement-form">
+                 <div class="form-group">
+                    <label class="form-label" data-en="CHOOSE STUDENТ" data-pa="ਵਿਦਿਆਰਥੀ ਚੁਣੋ">CHOOSE STUDENТ</label>
+                    <select class="form-control" id="enrollment-student-select" required>
+                       <!-- Filled dynamically -->
+                    </select>
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label" data-en="CHOOSE CURRICULUM" data-pa="ਸਿਲੇਬਸ ਕੋਰਸ ਚੁਣੋ">CHOOSE CURRICULUM</label>
+                    <select class="form-control" id="enrollment-course-select" required>
+                       <!-- Filled dynamically -->
+                    </select>
+                 </div>
+                 <button type="submit" class="btn btn-primary" data-en="ESTABLISH SHEET" data-pa="ਦਾਖਲਾ ਸੇਵ ਕਰੋ">ESTABLISH SHEET</button>
+              </form>
+           </div>
+
+           <!-- Right side: Registry Sheets -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Billing & Course Tracker Sheets" data-pa="ਦਾਖਲਾ ਫੀਸ ਅਤੇ ਕੋਰਸ ਸਥਿਤੀ ਰਿਕਾਰਡਸ">Billing & Course Tracker Sheets</h3>
+              <div class="table-wrapper">
+                 <table class="admin-table">
+                    <thead>
+                       <tr>
+                          <th data-en="Student Profile" data-pa="ਵਿਦਿਆਰਥੀ">Student Profile</th>
+                          <th data-en="Assigned Course" data-pa="ਕੋਰਸ">Assigned Course</th>
+                          <th data-en="Intake Date" data-pa="ਦਾਖਲਾ ਤਾਰੀਖ">Intake Date</th>
+                          <th data-en="Billing Books" data-pa="ਫੀਸ ਬੁੱਕ">Billing Books</th>
+                          <th data-en="Class Progress" data-pa="ਕਲਾਸ ਸਥਿਤੀ">Class Progress</th>
+                          <th data-en="Controls" data-pa="ਹਟਾਓ">Controls</th>
+                       </tr>
+                    </thead>
+                    <tbody id="enrollments-list-table">
+                       <!-- Loaded dynamically -->
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 4: COURSES ====================== -->
+     <div id="pane-courses" class="admin-section-pane" style="display:none;">
+        <div class="contact-layout">
+           <!-- Add New Curriculum Syllabus Form -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="New Course Curriculum Builder" data-pa="ਨਵਾਂ ਕੋਰਸ ਰਜਿਸਟਰ ਕਰੋ">New Course Curriculum Builder</h3>
+              <form id="admin-course-form">
+                 <div class="admin-form-row">
+                    <div class="form-group">
+                       <label class="form-label" for="course-title-en">ENGLISH COURSE TITLE</label>
+                       <input type="text" class="form-control" id="course-title-en" placeholder="e.g. Traditional Embroidery Masters" required />
+                    </div>
+                    <div class="form-group">
+                       <label class="form-label" for="course-title-pa">ਪੰਜਾਬੀ ਕੋਰਸ ਦਾ ਨਾਮ</label>
+                       <input type="text" class="form-control" id="course-title-pa" placeholder="ਉਦਾਹਰਣ: ਡਿਜ਼ਾਈਨਿੰਗ ਅਤੇ ਕਢਾਈ" required />
+                    </div>
+                 </div>
+
+                 <div class="form-group">
+                    <label class="form-label" for="course-desc-en">ENGLISH BRIEF DETAILS</label>
+                    <textarea class="form-control" id="course-desc-en" placeholder="Enter vocational summary in English..." required></textarea>
+                 </div>
+
+                 <div class="form-group">
+                    <label class="form-label" for="course-desc-pa">ਪੰਜਾਬੀ ਵਿੱਚ ਸੰਖੇਪ ਜਾਣਕਾਰੀ</label>
+                    <textarea class="form-control" id="course-desc-pa" placeholder="ਕੋਰਸ ਦੀ ਸਿਖਲਾਈ ਬਾਰੇ ਕੁਝ ਲਿਖੋ..." required></textarea>
+                 </div>
+
+                 <div class="admin-form-row">
+                    <div class="form-group">
+                       <label class="form-label" for="course-duration-en">DURATION (ENGLISH)</label>
+                       <input type="text" class="form-control" id="course-duration-en" placeholder="e.g. 6 Months Diploma" required />
+                    </div>
+                    <div class="form-group">
+                       <label class="form-label" for="course-duration-pa">ਕੋਰਸ ਦਾ ਸਮਾਂ (ਪੰਜਾਬੀ)</label>
+                       <input type="text" class="form-control" id="course-duration-pa" placeholder="ਉਦਾਹਰਣ: 6 ਮਹੀਨੇ ਦਾ ਡਿਪਲੋਮਾ" required />
+                    </div>
+                 </div>
+
+                 <div class="admin-form-row">
+                    <div class="form-group">
+                       <label class="form-label" for="course-syllabus-en">SYLLABUS FOCUS POINT (EN)</label>
+                       <input type="text" class="form-control" id="course-syllabus-en" placeholder="Phulkari, Zari work, Blouses" required />
+                    </div>
+                    <div class="form-group">
+                       <label class="form-label" for="course-syllabus-pa font-serif">ਮੁੱਖ ਸਿਲੇਬਸ ਬਾਰੀਕੀ (PA)</label>
+                       <input type="text" class="form-control" id="course-syllabus-pa" placeholder="ਫੁਲਕਾਰੀ, ਬਲਾਊਜ਼ ਡਿਜ਼ਾਈਨ" required />
+                    </div>
+                 </div>
+
+                 <div class="form-group">
+                    <label class="form-label" for="course-fees">MONTHLY / SEMESTER COURSE COURSE FEES (INR)</label>
+                    <input type="number" class="form-control" id="course-fees" placeholder="3000" required />
+                 </div>
+
+                 <button type="submit" class="btn btn-primary" data-en="PUBLISH CURRICULUM" data-pa="ਕੋਰਸ ਜਾਰੀ ਕਰੋ">PUBLISH CURRICULUM</button>
+              </form>
+           </div>
+
+           <!-- Current Active Curriculums -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Academy Syllabus Ledger" data-pa="ਉਪਲਬਧ ਸਿਲੇਬਸ ਕੋਰਸ">Academy Syllabus Ledger</h3>
+              <div class="table-wrapper">
+                 <table class="admin-table">
+                    <thead>
+                       <tr>
+                          <th data-en="Curriculum Class" data-pa="ਕੋਰਸ ਨਾਮ">Curriculum Class</th>
+                          <th data-en="Semester Fee" data-pa="ਕੋਰਸ ਫੀਸ">Semester Fee</th>
+                          <th data-en="Duration" data-pa="ਸਮਾਂ">Duration</th>
+                          <th data-en="Syllabus Highlights" data-pa="ਮੁੱਖ ਸਿਲੇਬਸ">Syllabus Highlights</th>
+                          <th data-en="Controls" data-pa="ਹਟਾਓ">Controls</th>
+                       </tr>
+                    </thead>
+                    <tbody id="courses-list-table">
+                       <!-- Loaded dynamically -->
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 5: CERTIFICATES ====================== -->
+     <div id="pane-certificates" class="admin-section-pane" style="display:none;">
+        <div class="contact-layout">
+           <!-- Left side: Certificate Generator form -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Award Professional Diploma" data-pa="ਨਵਾਂ ਸਰਟੀਫਿਕੇਟ ਤਿਆਰ ਕਰੋ">Award Professional Diploma</h3>
+              <form id="admin-certificate-generator-form">
+                 <div class="form-group">
+                    <label class="form-label" data-en="SELECT GRADUATED OUTTAKES" data-pa="ਕੋਰਸ ਪਾਸ-ਆਊਟ ਚੁਣੋ">SELECT GRADUATED OUTTAKES</label>
+                    <select class="form-control" id="certificate-issue-student-select" required>
+                       <!-- Filled dynamically -->
+                    </select>
+                 </div>
+                 
+                 <!-- Note notice explaining automated generation -->
+                 <div style="background-color: var(--light-cream); padding:0.75rem 1rem; border-radius:6px; font-size: 0.7rem; color:var(--slate-dark); border:1px solid var(--gold-sand); margin-bottom:1.5rem;"
+                      data-en="System automatically generates unique Certificate Ledger ID and Crypto Verification code."
+                      data-pa="ਦਾਖਲਾ ਹੋਣ 'ਤੇ ਸਿਸਟਮ ਲਾਈਵ ਵੈਰੀਫਿਕੇਸ਼ਨ ਕੋਡ ਅਤੇ ਸਰਟੀਫਿਕੇਟ ਲੈਜਰ ਆਈਡੀ ਆਪਣੇ ਆਪ ਤਿਆਰ ਕਰੇਗਾ।">
+                    System automatically generates unique Certificate Ledger ID and Crypto Verification code.
+                 </div>
+
+                 <button type="submit" class="btn btn-primary" data-en="ISSUE VERIFIED DIPLOMA" data-pa="ਸਰਟੀਫਿਕੇਟ ਜਾਰੀ ਕਰੋ">ISSUE VERIFIED DIPLOMA</button>
+              </form>
+           </div>
+
+           <!-- Right side: Certificates Register -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Cloud Issued Certificates" data-pa="ਜਾਰੀ ਕੀਤੇ ਸਰਟੀਫਿਕੇਟਾਂ ਦਾ ਲੈਜਰ">Cloud Issued Certificates</h3>
+              <div class="table-wrapper">
+                 <table class="admin-table">
+                    <thead>
+                       <tr>
+                          <th data-en="Graduate Name" data-pa="ਵਿਦਿਆਰਥੀ">Graduate Name</th>
+                          <th data-en="Qualified Class" data-pa="ਸਿਖਲਾਈ ਕੋਰਸ">Qualified Class</th>
+                          <th data-en="Ledger Number" data-pa="ਸਰਟੀਫਿਕੇਟ ਲੈਜਰ ਨੰਬਰ">Ledger Number</th>
+                          <th data-en="Verification Code" data-pa="ਵੈਰੀਫਿਕੇਸ਼ਨ ਕੋਡ">Verification Code</th>
+                          <th data-en="File Link" data-pa="ਪ੍ਰਿੰਟ">File Link</th>
+                       </tr>
+                    </thead>
+                    <tbody id="certificates-list-table">
+                       <!-- Loaded dynamically -->
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 6: GALLERY ====================== -->
+     <div id="pane-gallery" class="admin-section-pane" style="display:none;">
+        <div class="contact-layout">
+           <!-- Form to Add Gallery Image Link -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Add Portfolio Masterpiece" data-pa="ਨਵੀਂ ਫੋਟੋ ਸ਼ਾਮਲ ਕਰੋ">Add Portfolio Masterpiece</h3>
+              <form id="admin-gallery-form">
+                 <div class="form-group">
+                    <label class="form-label" for="gallery-img-url" data-en="IMAGE SOURCE URL LINK" data-pa="ਫ਼ੋਟੋ ਲਿੰਕ (Image Source URL)">IMAGE SOURCE URL LINK</label>
+                    <input type="url" class="form-control" id="gallery-img-url" placeholder="https://images.unsplash.com/..." required />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label" for="gallery-cap-en">ENGLISH BRIEF CAPTION</label>
+                    <input type="text" class="form-control" id="gallery-cap-en" placeholder="e.g. Designer suit with mirror work border" required />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label" for="gallery-cap-pa">ਪੰਜਾਬੀ ਫੋਟੋ ਸੁਰਖੀ (Caption)</label>
+                    <input type="text" class="form-control" id="gallery-cap-pa" placeholder="ਉਦਾਹਰਣ: ਡਿਜ਼ਾਈਨਰ ਸੂਟ ਅਤੇ ਸ਼ੀਸ਼ਾ ਕਢਾਈ" required />
+                 </div>
+
+                 <button type="submit" class="btn btn-primary" data-en="APPEND PORTFOLIO" data-pa="ਗੈਲਰੀ ਵਿੱਚ ਸੇਵ ਕਰੋ">APPEND PORTFOLIO</button>
+              </form>
+           </div>
+
+           <!-- Current Gallery Registry -->
+           <div class="admin-panel-box">
+              <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Current Portfolio Assets" data-pa="ਗੈਲਰੀ ਵਿੱਚ ਮੌਜੂਦ ਫੋਟੋਆਂ">Current Portfolio Assets</h3>
+              <div class="table-wrapper">
+                 <table class="admin-table">
+                    <thead>
+                       <tr>
+                          <th data-en="Preview" data-pa="ਝਲਕ">Preview</th>
+                          <th data-en="Caption Title" data-pa="ਫੋਟੋ ਟਾਈਟਲ">Caption Title</th>
+                          <th data-en="Source Link" data-pa="ਲਿੰਕ">Source Link</th>
+                          <th data-en="Controls" data-pa="ਹਟਾਓ">Controls</th>
+                       </tr>
+                    </thead>
+                    <tbody id="gallery-list-table">
+                       <!-- Loaded dynamically -->
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+     </div>
+
+     <!-- ====================== PANE 7: MESSAGES ====================== -->
+     <div id="pane-messages" class="admin-section-pane" style="display:none;">
+        <div class="admin-panel-box">
+           <h3 class="font-serif text-lg text-green-900" style="margin-bottom:1.5rem;" data-en="Visitor Messages & Inquiries" data-pa="ਪਬਲਿਕ ਸੰਪਰਕ ਸੰਦੇਸ਼">Visitor Messages & Inquiries</h3>
+           <div class="table-wrapper">
+              <table class="admin-table">
+                 <thead>
+                    <tr>
+                       <th data-en="Sender Profile" data-pa="ਸੁਨੇਹਾ ਭੇਜਣ ਵਾਲਾ">Sender Profile</th>
+                       <th data-en="Phone Support" data-pa="ਫ਼ੋਨ ਨੰਬਰ">Phone Support</th>
+                       <th data-en="Inquiry Details" data-pa="ਲਿਖਿਆ ਸੁਨੇਹਾ">Inquiry Details</th>
+                       <th data-en="Arrived At" data-pa="ਪ੍ਰਾਪਤ ਮਿਤੀ">Arrived At</th>
+                       <th data-en="Modify Controls" data-pa="ਹਟਾਓ">Modify Controls</th>
+                    </tr>
+                 </thead>
+                 <tbody id="messages-list-table">
+                    <!-- Loaded dynamically -->
+                 </tbody>
+              </table>
+           </div>
+        </div>
+     </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/language.js"></script>
+  <script type="module" src="js/admin-dashboard.js"></script>
+</body>
+</html>

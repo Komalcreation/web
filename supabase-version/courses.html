@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syllabus & Curriculums - Komal Creations</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header Navigation Section -->
+  <header class="no-print">
+    <nav class="navbar">
+      <a href="index.html" class="logo-container">
+        <div class="logo-crest">KC</div>
+        <div class="logo-text">
+          <h1 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h1>
+          <p data-en="& Training Center" data-pa="ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ">& ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ</p>
+        </div>
+      </a>
+      
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle">☰</button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="nav-link" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+        <li><a href="courses.html" class="nav-link active" data-en="Courses" data-pa="ਸਿਲਾਈ ਕੋਰਸ">ਸਿਲਾਈ ਕੋਰਸ</a></li>
+        <li><a href="gallery.html" class="nav-link" data-en="Portfolio" data-pa="ਸਾਡੇ ਡਿਜ਼ਾਈਨ">ਸਾਡੇ ਡਿਜ਼ਾਈਨ</a></li>
+        <li><a href="contact.html" class="nav-link" data-en="Contact" data-pa="ਸੰਪਰਕ ਕਰੋ">ਸੰਪਰਕ ਕਰੋ</a></li>
+        <li><a href="certificate-verify.html" class="nav-link" data-en="Verify certificate" data-pa="Verify ਸਰਟੀਫਿਕੇਟ">Verify ਸਰਟੀਫਿਕੇਟ</a></li>
+        <li>
+          <button class="lang-switch-btn" id="lang-switch-btn">🌐 English</button>
+        </li>
+        <li>
+          <a href="admin-login.html" class="nav-action-btn" data-en="Staff Login" data-pa="ਸਟਾਫ਼ ਲੌਗਇਨ">ਸਟਾਫ਼ ਲੌਗਇਨ</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Training Course directory list view -->
+  <main class="container">
+    <h2 class="section-title" data-en="Syllabus & Vocational Courses" data-pa="ਸਾਡੇ ਸਿਲਾਈ ਅਤੇ ਕਢਾਈ ਦੇ ਕੋਰਸ">ਸਾਡੇ ਸਿਲਾਈ ਅਤੇ ਕਢਾਈ ਦੇ ਕੋਰਸ</h2>
+    <p class="section-subtitle" 
+       data-en="We offer certified training plans spanning ladies flat stitching, handloom embroidery, Phulkari grids, and custom boutique bridal outfit designing."
+       data-pa="ਅਸੀਂ ਸੂਟ ਕਟਿੰਗ, ਰਵਾਇਤੀ ਕਢਾਈ, ਫੁਲਕਾਰੀ ਡਿਜ਼ਾਈਨ ਅਤੇ ਲਾੜੀ ਦੇ ਭਾਰੇ ਲਹਿੰਗਿਆਂ ਦੀ ਸਿਲਾਈ ਦੇ ਮਾਨਤਾ ਪ੍ਰਾਪਤ ਕੋਰਸ ਪ੍ਰਦਾਨ ਕਰਦੇ ਹਾਂ।">
+      ਅਸੀਂ ਸੂਟ ਕਟਿੰਗ, ਰਵਾਇਤੀ ਕਢਾਈ, ਫੁਲਕਾਰੀ ਡਿਜ਼ਾਈਨ ਅਤੇ ਲਾੜੀ ਦੇ ਭਾਰੇ ਲਹਿੰਗਿਆਂ ਦੀ ਸਿਲਾਈ ਦੇ ਮਾਨਤਾ ਪ੍ਰਾਪਤ ਕੋਰਸ ਪ੍ਰਦਾਨ ਕਰਦੇ ਹਾਂ।
+    </p>
+
+    <!-- Standard course grid populated dynamically by public-courses.js -->
+    <div class="courses-grid" id="courses-grid">
+       <div class="text-center p-8" data-en="Synthesizing course files from database..." data-pa="ਕੋਰਸ ਫਾਈਲਾਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ...">Loading active courses...</div>
+    </div>
+  </main>
+
+  <!-- Highlights visual highlight divider -->
+  <section style="background-color: var(--primary-green); color: #ffffff;" class="no-print">
+     <div class="container" style="text-align:center;">
+        <h3 class="font-serif text-2xl" style="color:var(--gold-sand);" data-en="Start Your Professional Boutique Management Career Today" data-pa="ਆਪਣਾ ਖੁਦ ਦਾ ਬੁਟੀਕ ਕਾਰੋਬਾਰ ਸ਼ੁਰੂ ਕਰੋ">ਆਪਣਾ ਖੁਦ ਦਾ ਬੁਟੀਕ ਕਾਰੋਬਾਰ ਸ਼ੁਰੂ ਕਰੋ</h3>
+        <p class="text-sm" style="max-width:600px; margin: 0.75rem auto 2rem auto; color:rgba(255,255,255,0.85);"
+           data-en="Submit an online registration form to reserve a practice workspace. Workstations are fully optimized with modern sewing machines."
+           data-pa="ਆਪਣੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰਨ ਲਈ ਦਾਖਲਾ ਫਾਰਮ ਭਰੋ। ਸੈਂਟਰ ਵਿੱਚ ਪ੍ਰੈਕਟੀਕਲ ਅਭਿਆਸ ਲਈ ਨਵੀਨਤਮ ਸਿਲਾਈ ਤੇ ਇੰਟਰਲਾਕ ਮਸ਼ੀਨਾਂ ਉਪਲਬਧ ਹਨ।">
+          ਆਪਣੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰਨ ਲਈ ਦਾਖਲਾ ਫਾਰਮ ਭਰੋ। ਸੈਂਟਰ ਵਿੱਚ ਪ੍ਰੈਕਟੀਕਲ ਅਭਿਆਸ ਲਈ ਨਵੀਨਤਮ ਸਿਲਾਈ ਤੇ ਇੰਟਰਲਾਕ ਮਸ਼ੀਨਾਂ ਉਪਲਬਧ ਹਨ।
+        </p>
+        <a href="contact.html" class="btn btn-primary" data-en="JOIN TRAINING CLASSES" data-pa="ਦਾਖਲਾ ਫਾਰਮ ਭਰੋ">ਦਾਖਲਾ ਫਾਰਮ ਭਰੋ</a>
+     </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h3>
+        <p data-en="Fashion designing academy, specialized ladies stitching catalogs, traditional needlework embroidery training center located in Nabha, Patiala, Punjab."
+           data-pa="ਫੈਸ਼ਨ ਡਿਜ਼ਾਈਨਿੰਗ ਅਕੈਡਮੀ, ਲੇਡੀਜ਼ ਸੂਟ ਸਿਲਾਈ, ਰਵਾਇਤੀ ਕਢਾਈ ਅਤੇ ਨਾਭਾ (ਪਟਿਆਲਾ) ਵਿਖੇ ਪੇਸ਼ੇਵਰ ਕਾਰੋਬਾਰ ਸਿਖਲਾਈ ਕੇਂਦਰ।">
+          ਫੈਸ਼ਨ ਡਿਜ਼ਾਈਨਿੰਗ ਅਕੈਡਮੀ, ਲੇਡੀਜ਼ ਸੂਟ ਸਿਲਾਈ, ਰਵਾਇਤੀ ਕਢਾਈ ਅਤੇ ਨਾਭਾ (ਪਟਿਆਲਾ) ਵਿਖੇ ਪੇਸ਼ੇਵਰ ਕਾਰੋਬਾਰ ਸਿਖਲਾਈ ਕੇਂਦਰ।
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3 data-en="Fast Links" data-pa="ਜ਼ਰੂਰੀ ਲਿੰਕ">ਜ਼ਰੂਰੀ ਲਿੰਕ</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+          <li><a href="courses.html" data-en="Courses" data-pa="ਸਿਲੇਬਸ ਕੋਰਸ">ਸਿਲੇਬਸ ਕੋਰਸ</a></li>
+          <li><a href="gallery.html" data-en="Portfolio Designs" data-pa="ਸਾਡੇ ਤਿਆਰ ਸੂਟ">ਸਾਡੇ ਤਿਆਰ ਸੂਟ</a></li>
+          <li><a href="contact.html" data-en="Inquiry Form" data-pa="ਦਾਖਲਾ ਫਾਰਮ">ਦਾਖਲਾ ਫਾਰਮ</a></li>
+          <li><a href="certificate-verify.html" data-en="Verify Certificate Records" data-pa="ਸਰਟੀਫਿਕੇਟ ਵੈਰੀਫਿਕੇਸ਼ਨ">ਸਰਟੀਫਿਕੇਟ ਵੈਰੀਫਿਕੇਸ਼ਨ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+         <h3 data-en="Reach Us" data-pa="ਸੰਪਰਕ ਪਤਾ">ਸੰਪਰਕ ਪਤਾ</h3>
+         <p data-en="📍 Megh Colony, Aloharan Khurd, Nabha, Patiala, Punjab - 147201, India" data-pa="📍 ਮੇਘ ਕਲੋਨੀ, ਅਲੌਹਰਾਂ ਖੁਰਦ, ਨਾਭਾ, ਪਟਿਆਲਾ, ਪੰਜਾਬ - 147201, ਭਾਰਤ">
+           📍 ਮੇਘ ਕਲੋਨੀ, ਅਲੌਹਰਾਂ ਖੁਰਦ, ਨਾਭਾ, ਪਟਿਆਲਾ, ਪੰਜਾਬ - 147201, ਭਾਰਤ
+         </p>
+         <p data-en="📞 +91 98145-90408 / +91 88725-65408" data-pa="📞 +91 98145-90408 / +91 88725-65408">
+           📞 +91 98145-90408 / +91 88725-65408
+         </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+       <span data-en="&copy; 2026 Komal Creations & Training Center. All rights reserved." data-pa="&copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ। ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।">
+         &copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ। ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।
+       </span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/language.js"></script>
+  <script type="module" src="js/public-courses.js"></script>
+  <script type="module">
+    import { $ } from './js/utils.js';
+    const toggle = $('#mobile-nav-toggle');
+    const links = $('#nav-links');
+    if (toggle && links) {
+      toggle.addEventListener('click', () => {
+        links.classList.toggle('show');
+      });
+    }
+  </script>
+</body>
+</html>

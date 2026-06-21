@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocational Certificate printout - Komal Creations</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+     /* Ensure background colors are preserved during chrome/safari printing processes */
+     @media print {
+        body {
+           -webkit-print-color-adjust: exact !important;
+           print-color-adjust: exact !important;
+        }
+     }
+  </style>
+</head>
+<body style="background-color: var(--slate-light); margin: 0; padding: 0;">
+
+  <!-- Simple No-Print floating controls page header bar -->
+  <div class="cert-print-actions-bar no-print">
+     <h1 class="font-serif">KM Certificate Hub</h1>
+     <div style="display:flex; gap:1rem; align-items:center;">
+        <button id="btn-trigger-print" class="btn btn-primary btn-xs">
+           🖨️ TRIGGER PHYSICAL PRINT (A4 LANDSCAPE)
+        </button>
+        <a href="admin-dashboard.html" class="btn btn-secondary btn-xs">
+           RETURN TO STAFF LEDGER
+        </a>
+     </div>
+  </div>
+
+  <!-- Traditional Ornamental Certificate Frame -->
+  <div class="certificate-frame">
+     <!-- Gold decorative corner accents inside primary container borders -->
+     <div class="cert-corner-tl"></div>
+     <div class="cert-corner-tr"></div>
+     <div class="cert-corner-bl"></div>
+     <div class="cert-corner-br"></div>
+
+     <!-- Double ornamental borders -->
+     <div class="cert-border-outer">
+        <div class="cert-border-inner">
+           
+           <!-- Top Academy Crest and Title -->
+           <div class="cert-header">
+              <div class="cert-crest" style="margin: 0 auto;">KC</div>
+              <h2>KOMAL CREATIONS & TRAINING CENTER</h2>
+              <p>Vocational Fashion Designing, Stitching & Embroidery Academy</p>
+              <p style="font-size:0.55rem; color: #1e293b; opacity: 0.7; margin-top:2px;">Megh Colony, Nabha, Patiala, Punjab, India</p>
+           </div>
+
+           <!-- Central Header Title -->
+           <div class="cert-title">
+              Certificate of Excellence
+           </div>
+
+           <!-- Certificate recipient graduation detail -->
+           <div class="cert-recipient">
+              <p>This is to certify that the student named below has successfully completed vocational training in</p>
+              <h3 id="cert-display-name">GURPREET KAUR</h3>
+           </div>
+
+           <!-- Detailed qualified curriculum syllabus description -->
+           <div class="cert-body">
+              and has qualified the required practical examinations, workshop demonstration panels, and structural tailoring layouts curated for active professionals in
+              <div class="cert-course-name font-serif" id="cert-display-course-en">Stitching & Sewing Masters</div>
+              <div class="font-serif text-slate-500 font-bold" id="cert-display-course-pa" style="font-size: 0.95rem; margin-top:0.25rem;">(ਲੇਡੀਜ਼ ਕੋਰਸ - ਬੇਸਿਕ ਸਿਲਾਈ)</div>
+           </div>
+
+           <!-- Verified cryptographic footers, seals, and auth signatures -->
+           <div class="cert-footer">
+              <!-- Left: Date and Ledger number -->
+              <div class="cert-footer-col cert-footer-left">
+                 <div style="margin-bottom:0.4rem;">
+                    <strong>GRADUATION DATE:</strong> <span class="font-mono" id="cert-display-date">2026-04-15</span>
+                 </div>
+                 <div>
+                    <strong>LEDGER SERIAL NO:</strong> <span class="font-mono font-bold text-red-800" id="cert-display-ledger">KC-2026-7841</span>
+                 </div>
+              </div>
+
+              <!-- Center: Red wax-like academy stamp seal -->
+              <div class="cert-footer-col">
+                 <div class="cert-seal">
+                    <span style="font-size:0.6rem; font-weight:800;">KOMAL</span>
+                    <span style="font-size:0.4rem; font-weight:500; border-y-width:1px; border-y-style:dashed; border-y-color:var(--accent-maroon); transform:scale(0.85); display:inline-block;">CREATIONS</span>
+                    <span style="font-size:0.4rem; font-weight:800; color:var(--primary-green);">SEAL</span>
+                 </div>
+              </div>
+
+              <!-- Right: Principal's Signature Line -->
+              <div class="cert-footer-col cert-footer-right">
+                 <div class="cert-signature-line">Komalpreet Kaur</div>
+                 <strong style="text-transform:uppercase; font-size:0.6rem; letter-spacing:0.05em; color:var(--slate-gray);">Principal & Director</strong>
+              </div>
+           </div>
+
+           <!-- Cryptographic verification audit label -->
+           <div class="cert-verification-link">
+              To search and audit the verification of this graduation diploma record, scan search code <strong class="font-mono text-green-800 text-xs" style="margin-left: 2px;" id="cert-display-code">KC9AA10</strong> at <strong>https://komal-creations.github.io/certificate-verify.html</strong>
+           </div>
+
+        </div>
+     </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/certificate-print.js"></script>
+</body>
+</html>

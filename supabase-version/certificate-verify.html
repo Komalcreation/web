@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Certificate Records - Komal Creations</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="no-print">
+    <nav class="navbar">
+      <a href="index.html" class="logo-container">
+        <div class="logo-crest">KC</div>
+        <div class="logo-text">
+          <h1 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h1>
+          <p data-en="& Training Center" data-pa="ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ">& ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ</p>
+        </div>
+      </a>
+      
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle">☰</button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="nav-link" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+        <li><a href="courses.html" class="nav-link" data-en="Courses" data-pa="ਸਿਲਾਈ ਕੋਰਸ">ਸਿਲਾਈ ਕੋਰਸ</a></li>
+        <li><a href="gallery.html" class="nav-link" data-en="Portfolio" data-pa="ਸਾਡੇ ਡਿਜ਼ਾਈਨ">ਸਾਡੇ ਡਿਜ਼ਾਈਨ</a></li>
+        <li><a href="contact.html" class="nav-link" data-en="Contact" data-pa="ਸੰਪਰਕ ਕਰੋ">ਸੰਪਰਕ ਕਰੋ</a></li>
+        <li><a href="certificate-verify.html" class="nav-link active" data-en="Verify certificate" data-pa="Verify ਸਰਟੀਫਿਕੇਟ">Verify ਸਰਟੀਫਿਕੇਟ</a></li>
+        <li>
+          <button class="lang-switch-btn" id="lang-switch-btn">🌐 English</button>
+        </li>
+        <li>
+          <a href="admin-login.html" class="nav-action-btn" data-en="Staff Login" data-pa="ਸਟਾਫ਼ ਲੌਗਇਨ">ਸਟਾਫ਼ ਲੌਗਇਨ</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Verification Search container -->
+  <main class="container">
+     <div class="verify-container">
+        <div style="text-align:center; margin-bottom:2.5rem;">
+           <div style="font-size:3rem; margin-bottom:0.5rem;">🎖️</div>
+           <h2 class="font-serif text-2xl text-green-900" data-en="Cryptographic Certificate Verification" data-pa="ਸਰਟੀਫਿਕੇਟ ਵੈਰੀਫਿਕੇਸ਼ਨ ਸਿਸਟਮ">ਸਰਟੀਫਿਕੇਟ ਵੈਰੀਫਿਕੇਸ਼ਨ ਸਿਸਟਮ</h2>
+           <p class="text-xs text-slate-500 mt-2" 
+              data-en="Inspect the legitimacy of vocational diplomas issued by Komal Creations. Enter the unique alphanumeric code written at the bottom edge."
+              data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਦੁਆਰਾ ਜਾਰੀ ਕੀਤੇ ਸਰਟੀਫਿਕੇਟ ਦੀ ਅਸਲੀਅਤ ਦੀ ਜਾਂਚ ਕਰੋ। ਸਰਟੀਫਿਕੇਟ ਦੇ ਹੇਠਾਂ ਦਿੱਤਾ ਵੈਰੀਫਿਕੇਸ਼ਨ ਕੋਡ ਦਰਜ ਕਰੋ।">
+              Inspect the legitimacy of vocational diplomas issued by Komal Creations. Enter the unique alphanumeric code written at the bottom edge.
+           </p>
+        </div>
+
+        <form id="certificate-verify-form">
+           <!-- Evaluation reminder for searching fallback lists -->
+           <div style="background-color: var(--light-cream); border:1px solid var(--gold-sand); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.7rem; color: var(--primary-green); margin-bottom: 1.5rem; line-height: 1.4;">
+             <strong data-en="Demo / Evaluation Code:" data-pa="ਲੈਜਰ ਵੈਰੀਫਿਕੇਸ਼ਨ ਟੈਸਟ ਕੋਡ:">ਲੈਜਰ ਵੈਰੀਫਿਕੇਸ਼ਨ ਟੈਸਟ ਕੋਡ:</strong><br>
+             <span data-en="To dry-run verify code lookup, type and search our default trial graduate code:" data-pa="ਆਨਲਾਈਨ ਲੈਜਰ ਚੈੱਕ ਦੀ ਪਰਖ ਕਰਨ ਲਈ ਹੇਠ ਲਿਖਿਆ ਕੋਡ ਭਰੋ:">ਆਨਲਾਈਨ ਲੈਜਰ ਚੈੱਕ ਦੀ ਪਰਖ ਕਰਨ ਲਈ ਹੇਠ ਲਿਖਿਆ ਕੋਡ ਭਰੋ:</span><br>
+             <code class="font-mono text-xs font-bold" style="color:var(--accent-maroon);">KC9AA10</code>
+          </div>
+
+           <div class="form-group">
+              <label class="form-label" for="verify-code-input" data-en="SECURE ALPHANUMERIC CODE" data-pa="ਵੈਰੀਫਿਕੇਸ਼ਨ ਕੋਡ">SECURE ALPHANUMERIC CODE</label>
+              <input type="text" class="form-control text-center font-mono font-bold text-lg" id="verify-code-input" data-placeholder-en="e.g. KC9AA10" data-placeholder-pa="ਉਦਾਹਰਣ: KC9AA10" placeholder="e.g. KC9AA10" required style="letter-spacing: 0.1em; text-transform: uppercase;" />
+           </div>
+
+           <button type="submit" class="btn btn-primary w-full" style="width:100%; justify-content:center; padding:1rem;" data-en="SEARCH & VALIDATE" data-pa="ਖੋਜ ਕਰੋ ਅਤੇ ਚੈੱਕ ਕਰੋ">SEARCH & VALIDATE</button>
+        </form>
+
+        <!-- Dynamic Success/Fail result area populated by certificate-verify.js -->
+        <div id="verify-result-wrapper"></div>
+     </div>
+  </main>
+
+  <!-- Footer block -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h3>
+        <p data-en="Fashion designing academy, ladies stitching, traditional needlework embroidery training center located in Nabha, Patiala, Punjab."
+           data-pa="ਫੈਸ਼ਨ ਡਿਜ਼ਾਈਨਿੰਗ ਅਕੈਡਮੀ, ਲੇਡੀਜ਼ ਸੂਟ ਸਿਲਾਈ, ਰਵਾਇਤੀ ਕਢਾਈ ਅਤੇ ਨਾਭਾ (ਪਟਿਆਲਾ) ਵਿਖੇ ਪੇਸ਼ੇਵਰ ਕਾਰੋਬਾਰ ਸਿਖਲਾਈ ਕੇਂਦਰ।">
+          ਫੈਸ਼ਨ ਡਿਜ਼ਾਈਨਿੰਗ ਅਕੈਡਮੀ, ਲੇਡੀਜ਼ ਸੂਟ ਸਿਲਾਈ, ਰਵਾਇਤੀ ਕਢਾਈ ਅਤੇ ਨਾਭਾ (ਪਟਿਆਲਾ) ਵਿਖੇ ਪੇਸ਼ੇਵਰ ਕਾਰੋਬਾਰ ਸਿਖਲਾਈ ਕੇਂਦਰ।
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3 data-en="Fast Links" data-pa="ਜ਼ਰੂਰੀ ਲਿੰਕ">ਜ਼ਰੂਰੀ ਲਿੰਕ</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+          <li><a href="courses.html" data-en="Courses" data-pa="ਸਿਲੇਬਸ ਕੋਰਸ">ਸਿਲੇਬਸ ਕੋਰਸ</a></li>
+          <li><a href="gallery.html" data-en="Portfolio Designs" data-pa="ਸਾਡੇ ਤਿਆਰ ਸੂਟ">ਸਾਡੇ ਤਿਆਰ ਸੂਟ</a></li>
+          <li><a href="contact.html" data-en="Inquiry Form" data-pa="ਦਾਖਲਾ ਫਾਰਮ">ਦਾਖਲਾ ਫਾਰਮ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+         <h3 data-en="Reach Us" data-pa="ਸੰਪਰਕ ਪਤਾ">ਸੰਪਰਕ ਪਤਾ</h3>
+         <p data-en="📍 Megh Colony, Nabha, Patiala" data-pa="📍 ਮੇਘ ਕਲੋਨੀ, ਨਾਭਾ, ਪਟਿਆਲਾ">📍 ਮੇਘ ਕਲੋਨੀ, ਨਾਭਾ, ਪਟਿਆਲਾ</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+       <span data-en="&copy; 2026 Komal Creations. Blockchain-like Audit Verification Trail Ledger." data-pa="&copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼। ਵੈਰੀਫਾਈਡ ਲੈਜਰ ਸਿਸਟਮ।">
+         &copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼। ਵੈਰੀਫਾਈਡ ਲੈਜਰ ਸਿਸਟਮ।
+       </span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/language.js"></script>
+  <script type="module" src="js/certificate-verify.js"></script>
+  <script type="module">
+    import { $ } from './js/utils.js';
+    const toggle = $('#mobile-nav-toggle');
+    const links = $('#nav-links');
+    if (toggle && links) {
+      toggle.addEventListener('click', () => {
+        links.classList.toggle('show');
+      });
+    }
+  </script>
+</body>
+</html>

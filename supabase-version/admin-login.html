@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Portal Sign-In - Komal Creations</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo-container">
+        <div class="logo-crest">KC</div>
+        <div class="logo-text">
+          <h1 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h1>
+          <p data-en="& Training Center" data-pa="ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ">& ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ</p>
+        </div>
+      </a>
+      
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle">☰</button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="nav-link" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+        <li><a href="courses.html" class="nav-link" data-en="Courses" data-pa="ਸਿਲਾਈ ਕੋਰਸ">ਸਿਲਾਈ ਕੋਰਸ</a></li>
+        <li><a href="gallery.html" class="nav-link" data-en="Portfolio" data-pa="ਸਾਡੇ ਡਿਜ਼ਾਈਨ">ਸਾਡੇ ਡਿਜ਼ਾਈਨ</a></li>
+        <li><a href="contact.html" class="nav-link" data-en="Contact" data-pa="ਸੰਪਰਕ ਕਰੋ">ਸੰਪਰਕ ਕਰੋ</a></li>
+        <li><a href="certificate-verify.html" class="nav-link" data-en="Verify certificate" data-pa="Verify ਸਰਟੀਫਿਕੇਟ">Verify ਸਰਟੀਫਿਕੇਟ</a></li>
+        <li>
+          <button class="lang-switch-btn" id="lang-switch-btn">🌐 English</button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Login form box -->
+  <main class="admin-login-wrapper">
+    <div class="admin-login-card">
+       <div class="admin-login-header">
+          <div style="font-size: 2.5rem;">🔑</div>
+          <h2 data-en="Administrative Access" data-pa="ਸਟਾਫ਼ ਲੌਗਇਨ ਪੈਨਲ">ਸਟਾਫ਼ ਲੌਗਇਨ ਪੈਨਲ</h2>
+          <p style="font-size: 0.75rem; color: var(--gold-sand); opacity: 0.9;" 
+             data-en="Access restricted to Komal Creations administrators." 
+             data-pa="ਇਹ ਪੋਰਟਲ ਸਿਰਫ਼ ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਡਮਿਨ ਲਈ ਹੈ।">
+             Access restricted to Komal Creations administrators.
+          </p>
+       </div>
+
+       <form class="admin-login-form" id="admin-login-form">
+          <!-- Information notice box for first-run evaluation logins -->
+          <div style="background-color: var(--light-cream); border:1px solid var(--gold-sand); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.7rem; color: var(--primary-green); margin-bottom: 1.5rem; line-height: 1.4;">
+             <strong data-en="Evaluation Note:" data-pa="ਦਾਖਲਾ ਈਮੇਲ ਕੋਡ:">ਦਾਖਲਾ ਈਮੇਲ ਕੋਡ:</strong><br>
+             <span data-en="If live Supabase is not yet established, use fallback trial credentials:" data-pa="ਸਿੱਕੇ ਰਿਕਾਰਡ ਚੈੱਕ ਕਰਨ ਲਈ ਹੇਠ ਲਿਖਿਆ ਟੈਸਟ ਕੋਡ ਭਰੋ:">ਸਿੱਕੇ ਰਿਕਾਰਡ ਚੈੱਕ ਕਰਨ ਲਈ ਹੇਠ ਲਿਖਿਆ ਟੈਸਟ ਕੋਡ ਭਰੋ:</span><br>
+             <code class="font-mono text-xs font-bold" style="color:var(--accent-maroon);">admin@komalcreations.com / komal1625</code>
+          </div>
+
+          <div class="form-group">
+             <label class="form-label" for="admin-email" data-en="ADMINISTRATOR EMAIL ID" data-pa="ਐਡਮਿਨ ਈਮੇਲ ਆਈਡੀ">ADMINISTRATOR EMAIL ID</label>
+             <input type="email" class="form-control" id="admin-email" placeholder="example@gmail.com" required value="admin@komalcreations.com" />
+          </div>
+
+          <div class="form-group">
+             <label class="form-label" for="admin-password" data-en="PASSCODE ACCESS KEY" data-pa="ਲੌਗਇਨ ਪਾਸਵਰਡ">PASSCODE ACCESS KEY</label>
+             <input type="password" class="form-control" id="admin-password" placeholder="••••••••" required value="komal1625" />
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:1.5rem;" id="admin-login-btn" data-en="AUTHORIZE ENTRY" data-pa="ਲੌਗਇਨ ਕਰੋ">AUTHORIZE ENTRY</button>
+       </form>
+    </div>
+  </main>
+
+  <!-- Footer block -->
+  <footer>
+    <div class="footer-bottom" style="border:none; padding-top:0;">
+       <span data-en="&copy; 2026 Komal Creations & Training Center. Specialized Admin Access." data-pa="&copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ। ਸੁਰੱਖਿਅਤ ਪੈਨਲ।">
+         &copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ। ਸੁਰੱਖਿਅਤ ਪੈਨਲ।
+       </span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/language.js"></script>
+  <script type="module" src="js/admin-login.js"></script>
+  <script type="module">
+    import { $ } from './js/utils.js';
+    const toggle = $('#mobile-nav-toggle');
+    const links = $('#nav-links');
+    if (toggle && links) {
+      toggle.addEventListener('click', () => {
+        links.classList.toggle('show');
+      });
+    }
+  </script>
+</body>
+</html>
