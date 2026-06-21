@@ -768,6 +768,10 @@ async function startServer() {
   // STATIC ASSETS AND FRONTEND ROUTING
   // ==========================================
 
+  // Serve static assets from the root 'assets' folder
+  app.use('/assets', express.static(path.join(process.cwd(), 'assets')));
+  app.use('/supabase-version/assets', express.static(path.join(process.cwd(), 'assets')));
+
   if (process.env.NODE_ENV !== 'production') {
     // In development mode, load Vite as middleware
     const vite = await createViteServer({
