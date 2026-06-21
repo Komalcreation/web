@@ -268,10 +268,15 @@ export function updateLanguageDOM() {
   // Set global language tag on body
   document.documentElement.lang = currentLang;
 
-  // Update elements with textcontent translations
+  // Update elements with translations
   const elements = document.querySelectorAll('[data-en][data-pa]');
   elements.forEach(el => {
-    el.textContent = el.getAttribute(`data-${currentLang}`) || '';
+    const val = el.getAttribute(`data-${currentLang}`) || '';
+    if (val.includes('<') && val.includes('>')) {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
   });
 
   // Update placeholders
