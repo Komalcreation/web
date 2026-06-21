@@ -75,12 +75,15 @@ async function handleEnrollmentSubmit(e) {
     // 1. Send Supabase Auth signUp to trigger automatic verification email
     let authUser = null;
     try {
+      const baseHref = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+      const verifyRedirectUrl = `${baseHref}/verify.html?email=${encodeURIComponent(email)}`;
+      
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: email,
         password: 'KomalStudentPassword123!',
         options: {
-          emailRedirectTo: `${window.location.origin}/verify.html?email=${encodeURIComponent(email)}`,
-          redirectTo: `${window.location.origin}/verify.html?email=${encodeURIComponent(email)}`
+          emailRedirectTo: verifyRedirectUrl,
+          redirectTo: verifyRedirectUrl
         }
       });
       if (signUpError) {
