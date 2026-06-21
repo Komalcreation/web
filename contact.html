@@ -133,10 +133,10 @@
       </div>
     </div>
 
-    <!-- Centered Syllabus Registration Form -->
+    <!-- Centered Course Registration Form -->
     <div class="enrollment-container" style="margin-top: 6rem;">
        <div class="enrollment-header">
-          <h3 data-en="Syllabus Course Registration" data-pa="ਨਵੇਂ ਕੋਰਸ ਲਈ ਦਾਖਲਾ ਫਾਰਮ">ਨਵੇਂ ਕੋਰਸ ਲਈ ਦਾਖਲਾ ਫਾਰਮ</h3>
+          <h3 data-en="Course Registration" data-pa="ਕੋਰਸ ਰਜਿਸਟ੍ਰੇਸ਼ਨ">Course Registration</h3>
           <p class="text-xs text-slate-500" data-en="Reserve your practice desk ledger now. Our staff will confirm placements immediately." data-pa="ਆਪਣੀ ਸੀਟ ਪੱਕੀ ਕਰਨ ਲਈ ਫਾਰਮ ਭਰੋ। ਸਾਡੇ ਅਧਿਆਪਕ ਦਾਖਲੇ ਦੀ ਤਸਦੀਕ ਲਈ ਜਲਦੀ ਹੀ ਸੰਪਰਕ ਕਰਨਗੇ।">Reserve your practice desk ledger now. Our staff will confirm placements immediately.</p>
        </div>
 
@@ -152,13 +152,18 @@
           </div>
 
           <div class="form-group">
+             <label class="form-label" for="enroll-email" data-en="EMAIL ADDRESS" data-pa="ਈਮੇਲ ਪਤਾ">EMAIL ADDRESS</label>
+             <input type="email" class="form-control" id="enroll-email" data-placeholder-en="example@gmail.com" data-placeholder-pa="ਉਦਾਹਰਣ: example@gmail.com" placeholder="example@gmail.com" required />
+          </div>
+
+          <div class="form-group">
              <label class="form-label" for="enroll-address" data-en="RESIDENTIAL POSTAL ADDRESS" data-pa="ਰਹਿਣ ਦਾ ਪਤਾ (Residential Address)">RESIDENTIAL POSTAL ADDRESS</label>
              <input type="text" class="form-control" id="enroll-address" data-placeholder-en="Street colony, City town name" data-placeholder-pa="ਗਲੀ, ਮੁਹੱਲਾ, ਪਿੰਡ ਜਾਂ ਸ਼ਹਿਰ ਦਾ ਨਾਮ" placeholder="Address" required />
           </div>
 
           <div class="admin-form-row">
              <div class="form-group">
-                <label class="form-label" for="enroll-course-select" data-en="CURRICULUM SYLLABUS" data-pa="ਟ੍ਰੇਨਿੰਗ ਸਿਲੇਬਸ ਕੋਰਸ">CURRICULUM SYLLABUS</label>
+                <label class="form-label" for="enroll-course-select" data-en="SELECT COURSE" data-pa="ਕੋਰਸ ਚੁਣੋ">SELECT COURSE</label>
                 <select class="form-control" id="enroll-course-select" required>
                    <option value="" disabled selected data-en="Loading courses list..." data-pa="ਕੋਰਸ ਫਾਈਲਾਂ ਚੁਣੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ...">Loading courses list...</option>
                 </select>

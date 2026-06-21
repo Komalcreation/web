@@ -152,8 +152,8 @@ async function startServer() {
     try {
       const { full_name, phone, email, address, course_id, language_preference } = req.body;
 
-      if (!full_name || !phone || !course_id) {
-        res.status(400).json({ error: 'Full Name, Phone Number, and Course selection are required.' });
+      if (!full_name || !phone || !email || !course_id) {
+        res.status(400).json({ error: 'Full Name, Phone Number, Email, and Course selection are required.' });
         return;
       }
 
@@ -166,8 +166,11 @@ async function startServer() {
         return;
       }
 
-      // See if student already exists by phone
-      let student = db.students.find(s => s.phone.replace(/[^0-9]/g, '') === phone.replace(/[^0-9]/g, ''));
+      // See if student already exists by phone or email
+      let student = db.students.find(s => 
+        s.phone.replace(/[^0-9]/g, '') === phone.replace(/[^0-9]/g, '') ||
+        (s.email && s.email.toLowerCase().trim() === email.toLowerCase().trim())
+      );
       
       if (!student) {
         // Create new student
@@ -176,12 +179,20 @@ async function startServer() {
           id: studentId,
           full_name,
           phone,
-          email: email || '',
+          email: email.toLowerCase().trim(),
           address: address || '',
           language_preference: language_preference === 'pa' ? 'pa' : 'en',
+          email_verified: false,
+          verification_status: 'pending',
           created_at: new Date().toISOString()
         };
         db.students.push(student);
+      } else {
+        // Ensure email verification statuses are set if they were missing
+        if (student.email_verified === undefined) {
+          student.email_verified = false;
+          student.verification_status = 'pending';
+        }
       }
 
       // Check if already enrolled in this course and status is active
@@ -199,7 +210,8 @@ async function startServer() {
         course_id,
         enrollment_date: new Date().toISOString().split('T')[0],
         fee_status: 'Pending',
-        status: 'Active',
+        status: 'Pending Verification',
+        course_status: 'Pending Verification',
         created_at: new Date().toISOString()
       };
       db.enrollments.push(enrollment);
@@ -207,12 +219,53 @@ async function startServer() {
       await writeDb(db);
       res.status(201).json({
         success: true,
-        message: 'Successfully enrolled! Our team will contact you on WhatsApp/Phone shortly.',
+        message: 'Successfully enrolled! Please verify your email to confirm registration.',
         enrollmentId
       });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Enrollment processing failed.' });
+    }
+  });
+
+  // Verify Student Email and Update Local DB
+  app.post('/api/public/verify-email', async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.status(400).json({ error: 'Email is required.' });
+        return;
+      }
+
+      const db = await readDb();
+      const cleanEmail = email.toLowerCase().trim();
+      const student = db.students.find(s => s.email && s.email.toLowerCase().trim() === cleanEmail);
+
+      if (!student) {
+        res.status(404).json({ error: 'Student registration record not found.' });
+        return;
+      }
+
+      // Update statuses
+      student.email_verified = true;
+      student.verification_status = 'verified';
+
+      // Update enrollment statuses
+      db.enrollments.forEach(e => {
+        if (e.student_id === student.id && (e.status === 'Pending Verification' || e.course_status === 'Pending Verification')) {
+          e.status = 'Active';
+          e.course_status = 'Active';
+        }
+      });
+
+      await writeDb(db);
+      res.json({
+        success: true,
+        message: 'Student email verified successfully and enrollment set to Active!'
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Verification processing failed.' });
     }
   });
 

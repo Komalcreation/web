@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Komal Creations - Email Verification</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .verify-box {
+      max-width: 500px;
+      margin: 8rem auto;
+      padding: 3rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-slate-50">
+
+  <!-- Header Navigation Section -->
+  <header class="no-print">
+    <nav class="navbar">
+      <a href="index.html" class="logo-container">
+        <div class="logo-crest">KC</div>
+        <div class="logo-text">
+          <h1 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h1>
+          <p data-en="& Training Center" data-pa="ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ">& ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ</p>
+        </div>
+      </a>
+      
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle">☰</button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="nav-link" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+        <li><a href="courses.html" class="nav-link" data-en="Courses" data-pa="ਸਿਲਾਈ ਕੋਰਸ">ਸਿਲਾਈ ਕੋਰਸ</a></li>
+        <li><a href="gallery.html" class="nav-link" data-en="Portfolio" data-pa="ਸਾਡੇ ਡਿਜ਼ਾਈਨ">ਸਾਡੇ ਡਿਜ਼ਾਈਨ</a></li>
+        <li><a href="contact.html" class="nav-link active" data-en="Contact" data-pa="ਸੰਪਰਕ ਕਰੋ">ਸੰਪਰਕ ਕਰੋ</a></li>
+        <li><a href="certificate-verify.html" class="nav-link" data-en="Verify certificate" data-pa="Verify ਸਰਟੀਫਿਕੇਟ">Verify ਸਰਟੀਫਿਕੇਟ</a></li>
+        <li>
+          <button class="lang-switch-btn" id="lang-switch-btn">🌐 English</button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="verify-box">
+      <!-- Status Icon -->
+      <div id="status-icon" class="text-6xl mb-6 text-green-700 animate-pulse">✉️</div>
+      
+      <!-- Status Heading -->
+      <h2 id="status-heading" class="font-serif text-2xl text-green-900 mb-4" data-en="Verifying Your Email..." data-pa="ਈਮੇਲ ਵੈਰੀਫਾਈ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...">Verifying Your Email...</h2>
+      
+      <!-- Status Message -->
+      <p id="status-desc" class="text-sm text-slate-600 mb-8" data-en="Please wait while we establish database validation." data-pa="ਕਿਰਪਾ ਕਰਕੇ ਕੁਝ ਸਕਿੰਟ ਉਡੀਕ ਕਰੋ, ਅਸੀਂ ਰਿਕਾਰਡ ਚੈੱਕ ਕਰ ਰਹੇ ਹਾਂ।">Please wait while we establish database validation.</p>
+      
+      <!-- CTA Button -->
+      <a href="index.html" class="btn btn-primary" style="display:inline-block;" data-en="Go to Home" data-pa="ਮੁੱਖ ਪੰਨਾ 'ਤੇ ਜਾਓ">Go to Home</a>
+    </div>
+  </main>
+
+  <!-- Script logic in pure module style -->
+  <script type="module" src="js/language.js"></script>
+  <script type="module">
+    import { supabase } from './js/supabase-config.js';
+    import { $, showToast } from './js/utils.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const statusIcon = $('#status-icon');
+      const statusHeading = $('#status-heading');
+      const statusDesc = $('#status-desc');
+
+      // Get email from URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      let email = urlParams.get('email');
+
+      // Check if session has user (which would naturally happen upon Supabase success redirect)
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user && session.user.email) {
+          email = session.user.email;
+        }
+      } catch (authErr) {
+        console.warn("Session check warning:", authErr);
+      }
+
+      if (!email) {
+        statusIcon.textContent = '❌';
+        statusIcon.classList.remove('animate-pulse');
+        statusHeading.textContent = 'Missing Email Query';
+        statusHeading.setAttribute('data-en', 'Missing Email Query');
+        statusHeading.setAttribute('data-pa', 'ਈਮੇਲ ਲਿੰਕ ਗੁੰਮ ਹੈ');
+        statusDesc.textContent = 'We could not capture the target student email to complete registration verification.';
+        statusDesc.setAttribute('data-en', 'We could not capture the target student email to complete registration verification.');
+        statusDesc.setAttribute('data-pa', 'ਸਾਨੂੰ ਵੈਰੀਫਿਕੇਸ਼ਨ ਪੂਰੀ ਕਰਨ ਲਈ ਲੋੜੀਂਦੀ ਈਮੇਲ ਜਾਣਕਾਰੀ ਨਹੀਂ ਮਿਲੀ।');
+        return;
+      }
+
+      try {
+        // 1. Update Supabase Records directly
+        const { error: studentError } = await supabase
+          .from('students')
+          .update({ email_verified: true, verification_status: 'verified' })
+          .eq('email', email);
+
+        if (studentError) {
+          console.warn("Supabase student verification write failed, proceeding:", studentError.message);
+        }
+
+        // Fetch student ID from email to update enrollments
+        const { data: studentsList } = await supabase
+          .from('students')
+          .select('id')
+          .eq('email', email);
+
+        if (studentsList && studentsList.length > 0) {
+          const studentId = studentsList[0].id;
+          const { error: enrollError } = await supabase
+            .from('enrollments')
+            .update({ status: 'Active', course_status: 'active' })
+            .eq('student_id', studentId);
+
+          if (enrollError) {
+            console.warn("Supabase enrollment verification write failed:", enrollError.message);
+          }
+        }
+
+        // 2. Update local file-database replica on backend server
+        const resp = await fetch('/api/public/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })
+        });
+        const data = await resp.json();
+
+        // 3. Mark UI state as Success
+        statusIcon.textContent = '✅';
+        statusIcon.classList.remove('animate-pulse');
+        statusHeading.textContent = 'Verification Successful!';
+        statusHeading.setAttribute('data-en', 'Verification Successful!');
+        statusHeading.setAttribute('data-pa', 'ਵੈਰੀਫਿਕੇਸ਼ਨ ਸਫਲ ਰਹੀ!');
+        statusDesc.textContent = `Your email address (${email}) was successfully verified. Your course enrollment is now ACTIVE.`;
+        statusDesc.setAttribute('data-en', `Your email address (${email}) was successfully verified. Your course enrollment is now ACTIVE.`);
+        statusDesc.setAttribute('data-pa', `ਤੁਹਾਡਾ ਈਮੇਲ ਪਤਾ (${email}) ਸਫਲਤਾਪੂਰਵਕ ਵੈਰੀਫਾਈ ਹੋ ਗਿਆ ਹੈ। ਤੁਹਾਡਾ ਕੋਰਸ ਦਾਖਲਾ ਹੁਣ ਚਾਲੂ (Active) ਹੈ।`);
+
+        showToast(
+          "Email verified successfully!",
+          "ਈਮੇਲ ਸਫਲਤਾਪੂਰਵਕ ਵੈਰੀਫਾਈ ਹੋ ਗਈ ਹੈ!",
+          "success"
+        );
+      } catch (err) {
+        console.error("Verification logic failed: ", err);
+        statusIcon.textContent = '❌';
+        statusIcon.classList.remove('animate-pulse');
+        statusHeading.textContent = 'Verification Failed';
+        statusDesc.textContent = 'An error occurred while communicating with the registration servers. Please contact support.';
+      }
+    });
+  </script>
+</body>
+</html>

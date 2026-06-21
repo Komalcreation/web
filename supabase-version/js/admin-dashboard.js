@@ -14,8 +14,8 @@ let localCourses = [
 ];
 
 let localStudents = [
-  { id: 's1', full_name: 'Gurpreet Kaur', phone: '9814590408', address: 'Nabha, Patiala', email: 'gurpreet@gmail.com' },
-  { id: 's2', full_name: 'Ramanpreet Kaur', phone: '8872565408', address: 'Aloharan Khurd', email: 'raman@gmail.com' }
+  { id: 's1', full_name: 'Gurpreet Kaur', phone: '9814590408', address: 'Nabha, Patiala', email: 'gurpreet@gmail.com', email_verified: true, verification_status: 'verified' },
+  { id: 's2', full_name: 'Ramanpreet Kaur', phone: '8872565408', address: 'Aloharan Khurd', email: 'raman@gmail.com', email_verified: false, verification_status: 'pending' }
 ];
 
 let localEnrollments = [
@@ -231,12 +231,23 @@ function renderSummaryLists() {
     const titleVal = activeLang === 'en' ? cour.title_en : cour.title_pa;
 
     const tr = document.createElement('tr');
+    
+    // Nice badge class mapping for course status
+    let courseBadgeStyle = 'text-blue-700 bg-blue-50';
+    if (en.course_status === 'Pending Verification' || en.course_status === 'pending_verification') {
+      courseBadgeStyle = 'text-amber-700 bg-amber-50 animate-pulse';
+    } else if (en.course_status === 'completed' || en.course_status === 'Active' || en.course_status === 'active') {
+      courseBadgeStyle = 'text-green-700 bg-green-50';
+    } else if (en.course_status === 'dropped') {
+      courseBadgeStyle = 'text-slate-700 bg-slate-50';
+    }
+
     tr.innerHTML = `
       <td class="font-bold">${stud.full_name}</td>
       <td>${titleVal}</td>
       <td class="font-mono">${en.started_at}</td>
       <td><span class="badge ${en.fee_status === 'paid' ? 'text-green-700 bg-green-50' : 'text-amber-700 bg-amber-50'}">${en.fee_status.toUpperCase()}</span></td>
-      <td><span class="badge ${en.course_status === 'active' ? 'text-blue-700 bg-blue-50' : 'text-slate-700 bg-slate-50'}">${en.course_status.toUpperCase()}</span></td>
+      <td><span class="badge ${courseBadgeStyle}">${en.course_status.toUpperCase()}</span></td>
     `;
     table.appendChild(tr);
   });
@@ -257,17 +268,24 @@ function renderStudentsList(filterQuery = '') {
   });
 
   if (list.length === 0) {
-    container.innerHTML = `<tr><td colspan="5" class="text-center">${activeLang === 'en' ? 'No students found.' : 'ਕੋਈ ਵਿਦਿਆਰਥੀ ਨਹੀਂ ਮਿਲਿਆ।'}</td></tr>`;
+    container.innerHTML = `<tr><td colspan="6" class="text-center">${activeLang === 'en' ? 'No students found.' : 'ਕੋਈ ਵਿਦਿਆਰਥੀ ਨਹੀਂ ਮਿਲਿਆ।'}</td></tr>`;
     return;
   }
 
   list.forEach(s => {
     const tr = document.createElement('tr');
+    
+    const isVerified = s.email_verified === true || s.verification_status === 'verified';
+    const verifiedBadge = isVerified 
+      ? `<span class="badge text-green-700 bg-green-50">✅ ${activeLang === 'en' ? 'Verified' : 'ਵੈਰੀਫਾਈਡ'}</span>`
+      : `<span class="badge text-amber-700 bg-amber-50">❌ ${activeLang === 'en' ? 'Pending' : 'ਬਾਕੀ ਹੈ'}</span>`;
+
     tr.innerHTML = `
       <td class="font-bold">${s.full_name}</td>
       <td class="font-mono">${s.phone}</td>
       <td>${s.address}</td>
-      <td class="font-mono text-xs">${s.email}</td>
+      <td class="font-mono text-xs">${s.email || '-'}</td>
+      <td>${verifiedBadge}</td>
       <td>
         <button class="btn btn-danger btn-xs btn-delete-student" data-id="${s.id}">
           ${activeLang === 'en' ? 'Delete' : 'ਮਿਟਾਓ'}
@@ -313,7 +331,8 @@ function renderEnrollmentsList() {
       </td>
       <td>
         <select class="form-control text-xs select-course-status" data-id="${en.id}" style="padding:0.25rem 0.5rem; width:110px;">
-          <option value="active" ${en.course_status === 'active' ? 'selected' : ''}>ACTIVE</option>
+          <option value="Pending Verification" ${en.course_status === 'Pending Verification' || en.course_status === 'pending_verification' ? 'selected' : ''}>PENDING VERf.</option>
+          <option value="active" ${en.course_status === 'active' || en.course_status === 'Active' ? 'selected' : ''}>ACTIVE</option>
           <option value="completed" ${en.course_status === 'completed' ? 'selected' : ''}>COMPLETED</option>
           <option value="dropped" ${en.course_status === 'dropped' ? 'selected' : ''}>DROPPED</option>
         </select>

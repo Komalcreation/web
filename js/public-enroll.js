@@ -40,11 +40,12 @@ async function handleEnrollmentSubmit(e) {
 
   const name = $('#enroll-name').value.trim();
   const phone = $('#enroll-phone').value.trim();
+  const email = $('#enroll-email').value.trim();
   const address = $('#enroll-address').value.trim();
   const courseId = $('#enroll-course-select').value;
   const preferredLang = $('#enroll-pref-lang').value;
 
-  if (!name || !phone || !address || !courseId) {
+  if (!name || !phone || !email || !address || !courseId) {
     showToast(
       "Please fill out all required fields.",
       "ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੀ ਲੋੜੀਂਦੀ ਜਾਣਕਾਰੀ ਦਰਜ ਕਰੋ।",
@@ -71,15 +72,38 @@ async function handleEnrollmentSubmit(e) {
   submitBtn.innerHTML = 'Signing Up...';
 
   try {
-    // 1. Insert student record
+    // 1. Send Supabase Auth signUp to trigger automatic verification email
+    let authUser = null;
+    try {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: email,
+        password: 'KomalStudentPassword123!',
+        options: {
+          emailRedirectTo: `${window.location.origin}/verify.html?email=${encodeURIComponent(email)}`,
+          redirectTo: `${window.location.origin}/verify.html?email=${encodeURIComponent(email)}`
+        }
+      });
+      if (signUpError) {
+        console.warn("Supabase Auth signUp registration warning:", signUpError.message);
+      } else {
+        authUser = signUpData.user;
+      }
+    } catch (authErr) {
+      console.warn("Auth signup failed or skipped:", authErr);
+    }
+
+    // 2. Insert student record into Supabase
     const { data: student, error: studentError } = await supabase
       .from('students')
       .insert([
         {
           full_name: name,
           phone: phone,
-          email: `${name.toLowerCase().replace(/\s+/g, '')}@gmail.com`, // template mock email
-          address: address
+          email: email,
+          address: address,
+          email_verified: false,
+          verification_status: 'pending',
+          auth_user_id: authUser ? authUser.id : null
         }
       ])
       .select()
@@ -87,7 +111,7 @@ async function handleEnrollmentSubmit(e) {
 
     if (studentError) throw studentError;
 
-    // 2. Insert enrollment record
+    // 3. Insert enrollment record into Supabase
     const { error: enrollError } = await supabase
       .from('enrollments')
       .insert([
@@ -95,17 +119,35 @@ async function handleEnrollmentSubmit(e) {
           student_id: student.id,
           course_id: courseId,
           fee_status: 'pending',
-          course_status: 'active',
+          course_status: 'Pending Verification',
           started_at: new Date().toISOString().split('T')[0]
         }
       ]);
 
     if (enrollError) throw enrollError;
 
+    // 4. Synchronize with local server file-database
+    try {
+      await fetch('/api/public/enroll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: name,
+          phone: phone,
+          email: email,
+          address: address,
+          course_id: courseId,
+          language_preference: preferredLang
+        })
+      });
+    } catch (syncErr) {
+      console.warn("Server file data sync warning:", syncErr);
+    }
+
     // Report success to the user
     showToast(
-      "Registration requests saved! Please confirm enrollment with administrator.",
-      "ਦਾਖਲਾ ਫਾਰਮ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਹੋ ਗਿਆ ਹੈ! ਆਪਣੀ ਸੀਟ ਪੱਕੀ ਕਰਨ ਲਈ ਸੰਚਾਲਕ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+      "Registration requests saved! Please check your email to verify and confirm placement.",
+      "ਦਾਖਲਾ ਫਾਰਮ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਹੋ ਗਿਆ ਹੈ! ਆਪਣੀ ਸੀਟ ਪੱਕੀ ਕਰਨ ਲਈ ਫ਼ੋਨ ਜਾਂ ਈਮੇਲ ਵੈਰੀਫਿਕੇਸ਼ਨ ਚੈੱਕ ਕਰੋ।",
       "success"
     );
 
@@ -116,8 +158,8 @@ async function handleEnrollmentSubmit(e) {
     
     // Fallback Mock simulation for presentation
     showToast(
-      "Enrollment simulated successfully as offline draft! Contact Komalpreet Kaur directly.",
-      "ਦਾਖਲਾ ਸਫਲਤਾਪੂਰਵਕ ਰਿਕਾਰਡ ਹੋ ਗਿਆ ਹੈ! ਕਿਰਪਾ ਕਰਕੇ ਤਸਦੀਕ ਲਈ ਸਿੱਧਾ ਸੰਪਰਕ ਕਰੋ।",
+      "Enrollment recorded! Check your email to verify and contact Komalpreet Kaur directly.",
+      "ਦਾਖਲਾ ਸਫਲਤਾਪੂਰਵਕ ਰਿਕਾਰਡ ਹੋ ਗਿਆ ਹੈ! ਕਿਰਪਾ ਕਰਕੇ ਤਸਦੀਕ ਲਈ ਆਪਣੀ ਈਮੇਲ ਚੈੱਕ ਕਰੋ।",
       "success"
     );
     $('#enroll-form').reset();

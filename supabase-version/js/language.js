@@ -7,7 +7,7 @@ export const translations = {
   en: {
     // Header & Navigation
     navHome: "Home",
-    navCourses: "Courses & Syllabus",
+    navCourses: "Courses",
     navGallery: "Design Portfolio",
     navContact: "Get in Touch",
     navVerify: "Verify Certificate",
@@ -29,13 +29,13 @@ export const translations = {
     featDesc3: "Practical hands-on training with diverse modern and antique machines.",
     
     // Enroll / Form info
-    enrollTitle: "Syllabus Course Registration",
+    enrollTitle: "Course Registration",
     enrollDesc: "Submit your details to reserve a workstation. Our team will verify and generate your registration ledger card.",
     lblFullName: "Student's Full Name",
     lblPhone: "WhatsApp Phone Number",
     lblAddress: "Residential Address",
     lblLanguagePref: "Comfort Code Language",
-    lblSelectCourse: "Select stitching curriculum",
+    lblSelectCourse: "Select Course",
     btnSubmitRegister: "Submit Enrollment Application",
     registerSuccess: "Registration request recorded successfully! Please contact Komalpreet Kaur to confirm placement.",
     registerFail: "Application submission declined. Please check fields or connect offline.",
@@ -78,13 +78,13 @@ export const translations = {
     tabSummary: "Summary Metrics",
     tabStudents: "Manage Students",
     tabEnrollments: "Enrollment Sheets",
-    tabCourses: "Manage Curriculums",
+    tabCourses: "Manage Courses",
     tabCertificates: "Issue Certificates",
     tabGallery: "Portfolio Gallery",
     tabMessages: "Visitor Messages",
     totalStudents: "Registered Students",
     totalEnrollments: "Continuous Enrollments",
-    totalCourses: "Syllabus Courses",
+    totalCourses: "Courses",
     totalMessages: "Inquiry Messages",
     totalCertificates: "Awarded Graduates",
     addStudent: "Add Student Profile",
@@ -118,7 +118,7 @@ export const translations = {
     
     // Others
     addPic: "Add Portfolio Image",
-    addCourse: "New Course Syllabus"
+    addCourse: "New Course"
   },
   pa: {
     // Header & Navigation
@@ -145,13 +145,13 @@ export const translations = {
     featDesc3: "ਵੱਖ-ਵੱਖ ਮਸ਼ੀਨਾਂ 'ਤੇ ਹੱਥੀਂ ਅਤੇ ਡਿਜ਼ਾਈਨਿੰਗ ਦੇ ਪ੍ਰੈਕਟੀਕਲ ਅਭਿਆਸ।",
     
     // Enroll / Form info
-    enrollTitle: "ਨਵੇਂ ਸਿਲਾਈ ਕੋਰਸ ਲਈ ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
+    enrollTitle: "ਕੋਰਸ ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
     enrollDesc: "ਦਾਖਲੇ ਦਾ ਫਾਰਮ ਭਰੋ। ਸਾਡੀ ਟੀਮ ਤੁਹਾਡੀ ਜਾਣਕਾਰੀ ਦੀ ਜਾਂਚ ਕਰਕੇ ਤੁਹਾਡਾ ਦਾਖਲਾ ਰਿਕਾਰਡ ਕਾਰਡ ਤਿਆਰ ਕਰੇਗੀ।",
     lblFullName: "ਵਿਦਿਆਰਥੀ ਦਾ ਪੂਰਾ ਨਾਮ",
     lblPhone: "ਵਟਸਐਪ ਮੋਬਾਈਲ ਨੰਬਰ",
     lblAddress: "ਘਰ ਦਾ ਪਤਾ (Residential Address)",
     lblLanguagePref: "ਭਾਸ਼ਾ ਚੋਣ (Language)",
-    lblSelectCourse: "ਆਪਣੇ ਕੋਰਸ ਦੀ ਚੋਣ ਕਰੋ",
+    lblSelectCourse: "ਕੋਰਸ ਚੁਣੋ",
     btnSubmitRegister: "ਦਾਖਲਾ ਬੇਨਤੀ ਫਾਰਮ ਭੇਜੋ",
     registerSuccess: "ਦਾਖਲਾ ਫਾਰਮ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਹੋ ਗਿਆ ਹੈ! ਆਪਣੀ ਸੀਟ ਪੱਕੀ ਕਰਨ ਲਈ ਕੋਮਲਪ੍ਰੀਤ ਕੌਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
     registerFail: "ਹੋਰ ਜਾਣਕਾਰੀ ਭਰਨ ਵਿੱਚ ਗਲਤੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ ਜਾਂ ਸਿੱਧਾ ਫੋਨ ਕਰੋ।",
@@ -194,7 +194,7 @@ export const translations = {
     tabSummary: "ਸੈਂਟਰ ਰਿਕਾਰਡਸ ਦਾ ਸਾਰਾਂਸ਼",
     tabStudents: "ਵਿਦਿਆਰਥੀ ਪ੍ਰੋਫਾਈਲ",
     tabEnrollments: "ਦਾਖਲਾ ਰਿਕਾਰਡ",
-    tabCourses: "ਸਿਲੇਬਸ ਕੋਰਸ",
+    tabCourses: "ਕੋਰਸ",
     tabCertificates: "ਸਰਟੀਫਿਕੇਟ ਜਾਰੀ ਕਰੋ",
     tabGallery: "ਗੈਲਰੀ ਫੋਟੋਆਂ",
     tabMessages: "ਵਿਜ਼ੀਟਰ ਸੁਨੇਹੇ",
