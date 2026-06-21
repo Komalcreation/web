@@ -127,13 +127,22 @@
           }
         }
 
-        // 2. Update local file-database replica on backend server
-        const resp = await fetch('/api/public/verify-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email })
-        });
-        const data = await resp.json();
+        // 2. Update local file-database replica on backend server (if available)
+        try {
+          const resp = await fetch('/api/public/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            console.log("Local file-database replica synchronized successfully:", data);
+          } else {
+            console.warn("Backend server returned non-ok status for replica sync, continuing:", resp.status);
+          }
+        } catch (serverErr) {
+          console.warn("Backend server replica sync skipped or failed (static hosting environment), continuing:", serverErr);
+        }
 
         // 3. Mark UI state as Success
         statusIcon.textContent = '✅';
