@@ -1,0 +1,6 @@
+{
+  "name": "Komal Creations & Training Center",
+  "description": "Bilingual website and admin portal for Komal Creations & Training Center, Nabha, Patiala. Offers course registration, student enrollment, gallery showcase, contact messaging, and real-time printable certificate generation & verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
