@@ -389,7 +389,7 @@ function renderEnrollmentsList() {
       </td>
       <td>
         <select class="form-control text-xs select-course-status ${courseClass}" data-id="${en.id}" style="padding:0.25rem 0.5rem; width:110px;">
-          <option value="Pending Verification" ${en.course_status === 'Pending Verification' || en.course_status === 'pending_verification' ? 'selected' : ''}>PENDING VERf.</option>
+          <option value="pending_verification" ${en.course_status === 'Pending Verification' || en.course_status === 'pending_verification' ? 'selected' : ''}>PENDING VERf.</option>
           <option value="active" ${en.course_status === 'active' || en.course_status === 'Active' ? 'selected' : ''}>ACTIVE</option>
           <option value="completed" ${en.course_status === 'completed' ? 'selected' : ''}>COMPLETED</option>
           <option value="dropped" ${en.course_status === 'dropped' ? 'selected' : ''}>DROPPED</option>

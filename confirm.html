@@ -312,8 +312,8 @@
             const { error: enrollUpdateErr } = await supabase
               .from('enrollments')
               .update({
-                status: 'Active',
-                course_status: 'Active'
+                status: 'active',
+                course_status: 'active'
               })
               .eq('student_id', student.id);
 

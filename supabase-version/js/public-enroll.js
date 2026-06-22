@@ -178,9 +178,9 @@ async function handleEnrollmentSubmit(e) {
       course_id: courseId,
       enrollment_date: currentDate,
       started_at: currentDate,
-      fee_status: 'Pending',
-      status: 'Pending Verification',
-      course_status: 'Pending Verification'
+      fee_status: 'pending',
+      status: 'pending_verification',
+      course_status: 'pending_verification'
     };
 
     const { error: enrollError } = await supabase

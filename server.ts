@@ -209,9 +209,9 @@ async function startServer() {
         student_id: student.id,
         course_id,
         enrollment_date: new Date().toISOString().split('T')[0],
-        fee_status: 'Pending',
-        status: 'Pending Verification',
-        course_status: 'Pending Verification',
+        fee_status: 'pending',
+        status: 'pending_verification',
+        course_status: 'pending_verification',
         created_at: new Date().toISOString()
       };
       db.enrollments.push(enrollment);
@@ -252,9 +252,9 @@ async function startServer() {
 
       // Update enrollment statuses
       db.enrollments.forEach(e => {
-        if (e.student_id === student.id && (e.status === 'Pending Verification' || e.course_status === 'Pending Verification')) {
-          e.status = 'Active';
-          e.course_status = 'Active';
+        if (e.student_id === student.id && (e.status === 'Pending Verification' || e.course_status === 'Pending Verification' || e.status === 'pending_verification' || e.course_status === 'pending_verification')) {
+          e.status = 'active';
+          e.course_status = 'active';
         }
       });
 
@@ -549,8 +549,9 @@ async function startServer() {
         student_id,
         course_id,
         enrollment_date: new Date().toISOString().split('T')[0],
-        fee_status: fee_status || 'Pending',
-        status: status || 'Active',
+        fee_status: fee_status || 'pending',
+        status: status || 'active',
+        course_status: status || 'active',
         created_at: new Date().toISOString()
       };
 
