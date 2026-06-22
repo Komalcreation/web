@@ -37,6 +37,7 @@ let localMessages = [
 
 let activeTab = 'summary';
 let useLocalOfflineFallback = false;
+let dbStudentCount = 0;
 
 // --- DYNAMIC INITIALIZATION AND DELEGATORS ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -127,6 +128,7 @@ function setupFormSubmissions() {
 // --- CORE DISPATCH REFRESHEES ---
 async function refreshAllData() {
   if (useLocalOfflineFallback) {
+    dbStudentCount = localStudents.length;
     renderTabContent();
     return;
   }
@@ -138,6 +140,22 @@ async function refreshAllData() {
 
     const { data: s } = await supabase.from('students').select('*');
     if (s) localStudents = s;
+
+    // Direct exact count query from database to sync metrics (Bug 2)
+    try {
+      const { count } = await supabase.from('students').select('*', { count: 'exact', head: true });
+      if (count !== null) {
+        dbStudentCount = count;
+      } else {
+        dbStudentCount = localStudents.length;
+      }
+    } catch (countErr) {
+      console.warn("Direct DB count fetch failed:", countErr);
+      dbStudentCount = localStudents.length;
+    }
+
+    // Required Bug 2 Debug log
+    console.log('Total students from DB:', localStudents?.length, localStudents);
 
     const { data: e } = await supabase.from('enrollments').select('*');
     if (e) localEnrollments = e;
@@ -155,6 +173,7 @@ async function refreshAllData() {
   } catch (err) {
     console.error("Critical database fetch fail", err);
     useLocalOfflineFallback = true;
+    dbStudentCount = localStudents.length;
     renderTabContent();
   }
 }
@@ -200,7 +219,7 @@ function renderTabContent() {
 
 // --- WORKSHOP COUNTERS ---
 function updateMetricCounters() {
-  $('#stat-student-count').textContent = localStudents.length;
+  $('#stat-student-count').textContent = dbStudentCount;
   $('#stat-enrollment-count').textContent = localEnrollments.length;
   $('#stat-course-count').textContent = localCourses.length;
   $('#stat-certificates-count').textContent = localCertificates.length;
@@ -262,30 +281,49 @@ function renderStudentsList(filterQuery = '') {
   const activeLang = localStorage.getItem('komal_creations_lang') || 'pa';
 
   const list = localStudents.filter(s => {
-    return s.full_name.toLowerCase().includes(filterQuery) ||
-           s.phone.includes(filterQuery) ||
-           s.address.toLowerCase().includes(filterQuery);
+    const fName = (s.full_name || '').toLowerCase();
+    const phone = s.phone || '';
+    const addr = (s.address || '').toLowerCase();
+    const email = (s.email || '').toLowerCase();
+    return fName.includes(filterQuery) ||
+           phone.includes(filterQuery) ||
+           addr.includes(filterQuery) ||
+           email.includes(filterQuery);
   });
 
   if (list.length === 0) {
-    container.innerHTML = `<tr><td colspan="6" class="text-center">${activeLang === 'en' ? 'No students found.' : 'ਕੋਈ ਵਿਦਿਆਰਥੀ ਨਹੀਂ ਮਿਲਿਆ।'}</td></tr>`;
+    container.innerHTML = `<tr><td colspan="7" class="text-center">${activeLang === 'en' ? 'No students found.' : 'ਕੋਈ ਵਿਦਿਆਰਥੀ ਨਹੀਂ ਮਿਲਿਆ।'}</td></tr>`;
     return;
   }
 
   list.forEach(s => {
     const tr = document.createElement('tr');
     
+    // Gracefully handle null values (Bug 2)
+    const studentName = s.full_name ? s.full_name.trim() : "(Unknown Student)";
+    const studentPhone = s.phone ? s.phone.trim() : "-";
+    const studentEmail = s.email ? s.email.trim() : "-";
+    const studentAddress = s.address ? s.address.trim() : "-";
+
     const isVerified = s.email_verified === true || s.verification_status === 'verified';
-    const verifiedBadge = isVerified 
-      ? `<span class="badge text-green-700 bg-green-50">✅ ${activeLang === 'en' ? 'Verified' : 'ਵੈਰੀਫਾਈਡ'}</span>`
-      : `<span class="badge text-amber-700 bg-amber-50">❌ ${activeLang === 'en' ? 'Pending' : 'ਬਾਕੀ ਹੈ'}</span>`;
+    const verifiedIcon = isVerified ? '<span class="text-green-700">✅</span>' : '<span class="text-slate-400">❌</span>';
+
+    let statusBadge = '';
+    if (s.verification_status === 'verified') {
+      statusBadge = `<span class="badge text-green-700 bg-green-50 font-semibold" style="text-transform: capitalize;">✨ ${activeLang === 'en' ? 'Verified' : 'ਵੈਰੀਫਾਈਡ'}</span>`;
+    } else if (s.verification_status === 'admin_added' || s.verification_status === 'admin-added') {
+      statusBadge = `<span class="badge text-blue-700 bg-blue-50 font-semibold" style="text-transform: capitalize;">👤 ${activeLang === 'en' ? 'Admin Added' : 'ਐਡਮਿਨ ਦੁਆਰਾ ਸ਼ਾਮਲ'}</span>`;
+    } else {
+      statusBadge = `<span class="badge text-amber-700 bg-amber-50 font-semibold animate-pulse" style="text-transform: capitalize;">⏳ ${activeLang === 'en' ? 'Pending' : 'ਬਾਕੀ ਹੈ'}</span>`;
+    }
 
     tr.innerHTML = `
-      <td class="font-bold">${s.full_name}</td>
-      <td class="font-mono">${s.phone}</td>
-      <td>${s.address}</td>
-      <td class="font-mono text-xs">${s.email || '-'}</td>
-      <td>${verifiedBadge}</td>
+      <td class="font-bold">${studentName}</td>
+      <td class="font-mono text-sm">${studentPhone}</td>
+      <td class="font-mono text-xs">${studentEmail}</td>
+      <td class="text-slate-700 text-sm">${studentAddress}</td>
+      <td class="text-center">${verifiedIcon}</td>
+      <td>${statusBadge}</td>
       <td>
         <button class="btn btn-danger btn-xs btn-delete-student" data-id="${s.id}">
           ${activeLang === 'en' ? 'Delete' : 'ਮਿਟਾਓ'}
@@ -312,25 +350,45 @@ function renderEnrollmentsList() {
     return;
   }
 
+  const getCourseStatusClass = (status) => {
+    const s = (status || '').toLowerCase();
+    if (s === 'active') return 'bg-green-50 text-green-700 font-bold border-green-200';
+    if (s === 'pending verification' || s === 'pending_verification') return 'bg-amber-50 text-amber-700 font-bold border-amber-200';
+    if (s === 'completed') return 'bg-blue-50 text-blue-700 font-bold border-blue-200';
+    if (s === 'dropped' || s === 'cancelled') return 'bg-rose-50 text-rose-700 font-bold border-rose-200';
+    return 'bg-slate-50 text-slate-600 border-slate-200';
+  };
+
+  const getFeeStatusClass = (status) => {
+    const s = (status || '').toLowerCase();
+    if (s === 'paid') return 'bg-green-50 text-green-700 font-bold border-green-200';
+    if (s === 'half' || s === 'half paid') return 'bg-amber-50 text-amber-50 font-bold border-amber-200';
+    return 'bg-slate-100 text-slate-600 border-slate-200';
+  };
+
   localEnrollments.forEach(en => {
     const student = localStudents.find(s => s.id === en.student_id) || { full_name: 'Unknown', phone: '-' };
     const course = localCourses.find(c => c.id === en.course_id) || { title_en: 'Deleted Course', title_pa: 'ਮਿਟਾਇਆ ਗਿਆ ਕੋਰਸ' };
     const titleVal = activeLang === 'en' ? course.title_en : course.title_pa;
 
     const tr = document.createElement('tr');
+    
+    const feeClass = getFeeStatusClass(en.fee_status);
+    const courseClass = getCourseStatusClass(en.course_status);
+
     tr.innerHTML = `
       <td class="font-bold">${student.full_name} <p class="text-xs text-slate-500 font-mono">${student.phone}</p></td>
       <td>${titleVal}</td>
       <td class="font-mono text-xs">${en.started_at}</td>
       <td>
-        <select class="form-control text-xs select-fee-status" data-id="${en.id}" style="padding:0.25rem 0.5rem; width:100px;">
+        <select class="form-control text-xs select-fee-status ${feeClass}" data-id="${en.id}" style="padding:0.25rem 0.5rem; width:100px;">
           <option value="pending" ${en.fee_status === 'pending' ? 'selected' : ''}>PENDING</option>
           <option value="half" ${en.fee_status === 'half' ? 'selected' : ''}>HALF PAID</option>
           <option value="paid" ${en.fee_status === 'paid' ? 'selected' : ''}>PAID</option>
         </select>
       </td>
       <td>
-        <select class="form-control text-xs select-course-status" data-id="${en.id}" style="padding:0.25rem 0.5rem; width:110px;">
+        <select class="form-control text-xs select-course-status ${courseClass}" data-id="${en.id}" style="padding:0.25rem 0.5rem; width:110px;">
           <option value="Pending Verification" ${en.course_status === 'Pending Verification' || en.course_status === 'pending_verification' ? 'selected' : ''}>PENDING VERf.</option>
           <option value="active" ${en.course_status === 'active' || en.course_status === 'Active' ? 'selected' : ''}>ACTIVE</option>
           <option value="completed" ${en.course_status === 'completed' ? 'selected' : ''}>COMPLETED</option>
@@ -724,12 +782,15 @@ async function handleAddStudent(e) {
 
   const email = emailVal || `${full_name.toLowerCase().replace(/\s+/g, '')}@gmail.com`;
 
+  // Bug 6: Admin manual addition should auto-verify
   const newStudent = {
     id: useLocalOfflineFallback ? `s-${Date.now()}` : undefined,
     full_name,
     phone,
     address,
-    email
+    email,
+    email_verified: true,
+    verification_status: 'admin_added'
   };
 
   if (!useLocalOfflineFallback) {

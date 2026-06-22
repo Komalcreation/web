@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Komal Creations - Email Verification Confirmation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .verify-box {
+      max-width: 600px;
+      margin: 6rem auto;
+      padding: 3rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(14, 75, 58, 0.08);
+      text-align: center;
+      border: 1px solid #fff4df;
+    }
+    .btn-green {
+      background-color: #0e4b3a !important;
+      color: #fff4df !important;
+    }
+    .btn-green:hover {
+      background-color: #0b3a2d !important;
+    }
+    .btn-outline {
+      background: transparent !important;
+      color: #8b1f2f !important;
+      border: 1px solid #8b1f2f !important;
+    }
+    .btn-outline:hover {
+      background: #8b1f2f !important;
+      color: white !important;
+    }
+    .status-badge-ok {
+      font-size: 5rem;
+      color: #0e4b3a;
+      margin-bottom: 1.5rem;
+    }
+    .status-badge-err {
+      font-size: 5rem;
+      color: #8b1f2f;
+      margin-bottom: 1.5rem;
+    }
+    .status-badge-loading {
+      font-size: 5rem;
+      color: #0e4b3a;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body class="bg-slate-50">
+
+  <!-- Header Navigation Section -->
+  <header class="no-print">
+    <nav class="navbar">
+      <a href="index.html" class="logo-container">
+        <div class="logo-crest">KC</div>
+        <div class="logo-text">
+          <h1 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h1>
+          <p data-en="& Training Center" data-pa="ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ">& ਐਂਡ ਟ੍ਰੇਨਿੰਗ ਸੈਂਟਰ</p>
+        </div>
+      </a>
+      
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle">☰</button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="nav-link" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+        <li><a href="courses.html" class="nav-link" data-en="Courses" data-pa="ਸਿਲਾਈ ਕੋਰਸ">ਸਿਲਾਈ ਕੋਰਸ</a></li>
+        <li><a href="gallery.html" class="nav-link" data-en="Portfolio" data-pa="ਸਾਡੇ ਡਿਜ਼ਾਈਨ">ਸਾਡੇ ਡਿਜ਼ਾਈਨ</a></li>
+        <li><a href="contact.html" class="nav-link active" data-en="Contact" data-pa="ਸੰਪਰਕ ਕਰੋ">ਸੰਪਰਕ ਕਰੋ</a></li>
+        <li><a href="certificate-verify.html" class="nav-link" data-en="Verify certificate" data-pa="Verify ਸਰਟੀਫਿਕੇਟ">Verify ਸਰਟੀਫਿਕੇਟ</a></li>
+        <li>
+          <button class="lang-switch-btn" id="lang-switch-btn">🌐 English</button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="verify-box">
+      <!-- Status Badge -->
+      <div id="status-badge" class="status-badge-loading animate-pulse">⏳</div>
+      
+      <!-- Status Heading -->
+      <h2 id="status-heading" class="font-serif text-3xl mb-4 text-green-900" 
+          data-en="Verifying your email..." 
+          data-pa="ਤੁਹਾਡੀ ਈਮੇਲ ਦੀ ਵੈਰੀਫਿਕੇਸ਼ਨ ਹੋ ਰਹੀ ਹੈ...">
+          Verifying your email...
+      </h2>
+      
+      <!-- Status Desc -->
+      <p id="status-desc" class="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed" 
+          data-en="Connecting to secure registration cloud. Please wait..." 
+          data-pa="ਸੁਰੱਖਿਅਤ ਸਰਵਰ ਨਾਲ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਦੀ ਤਸਦੀਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ...">
+          Connecting to secure registration cloud. Please wait...
+      </p>
+
+      <!-- Details Box (e.g. Student name / Email) -->
+      <div id="info-box" class="bg-slate-100 p-4 rounded-lg mb-8 text-left text-sm" style="display: none;">
+        <span class="font-semibold block mb-1 text-slate-800" data-en="Student Profile:" data-pa="ਵਿਦਿਆਰਥੀ ਦਾ ਪ੍ਰੋਫਾਈਲ:">Student Profile:</span>
+        <span id="info-student-name" class="font-medium text-slate-700 block"></span>
+        <span id="info-student-email" class="text-xs text-slate-500 font-mono block"></span>
+      </div>
+      
+      <!-- CTA Action Button Container -->
+      <div id="action-buttons" class="flex gap-4 justify-center flex-wrap">
+        <a href="index.html" class="btn btn-green shadow" style="display: none; padding: 0.75rem 1.5rem;" id="home-btn"
+           data-en="Go to Home" data-pa="ਮੁੱਖ ਪੰਨਾ 'ਤੇ ਜਾਓ">Go to Home</a>
+        <a href="contact.html" class="btn btn-outline" style="display: none; padding: 0.75rem 1.5rem;" id="contact-btn"
+           data-en="Register Again" data-pa="ਦੁਬਾਰਾ ਰਜਿਸਟਰ ਕਰੋ">Register Again</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer block -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3 data-en="Komal Creations" data-pa="ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼">ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼</h3>
+        <p data-en="Fashion designing academy, specialized ladies stitching catalogs, traditional needlework embroidery training center located in Nabha, Patiala, Punjab."
+           data-pa="ਫੈਸ਼ਨ ਡਿਜ਼ਾਈਨਿੰਗ ਅਕੈਡਮੀ, ਲੇਡੀਜ਼ ਸੂਟ ਸਿਲਾਈ, ਰਵਾਇਤੀ ਕਢਾਈ ਅਤੇ ਨਾਭਾ (ਪਟਿਆਲਾ) ਵਿਖੇ ਪੇਸ਼ੇਵਰ ਕਾਰੋਬਾਰ ਸਿਖਲਾਈ ਕੇਂਦਰ।">
+          ਫੈਸ਼ਨ ਡਿਜ਼ਾਈਨਿੰਗ ਅਕੈਡਮੀ, ਲੇਡੀਜ਼ ਸੂਟ ਸਿਲਾਈ, ਰਵਾਇਤੀ ਕਢਾਈ ਅਤੇ ਨਾਭਾ (ਪਟਿਆਲਾ) ਵਿਖੇ ਪੇਸ਼ੇਵਰ ਕਾਰੋਬਾਰ ਸਿਖਲਾਈ ਕੇਂਦਰ।
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3 data-en="Fast Links" data-pa="ਜ਼ਰੂਰੀ ਲਿੰਕ">ਜ਼ਰੂਰੀ ਲਿੰਕ</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-en="Home" data-pa="ਮੁੱਖ ਪੰਨਾ">ਮੁੱਖ ਪੰਨਾ</a></li>
+          <li><a href="courses.html" data-en="Courses" data-pa="ਸਿਲੇਬਸ ਕੋਰਸ">ਸਿਲੇਬਸ ਕੋਰਸ</a></li>
+          <li><a href="gallery.html" data-en="Portfolio Designs" data-pa="ਸਾਡੇ ਤਿਆਰ ਸੂਟ">ਸਾਡੇ ਤਿਆਰ ਸੂਟ</a></li>
+          <li><a href="contact.html" data-en="Inquiry Form" data-pa="ਦਾਖਲਾ ਫਾਰਮ">ਦਾਖਲਾ ਫਾਰਮ</a></li>
+          <li><a href="certificate-verify.html" data-en="Verify Certificate Records" data-pa="ਸਰਟੀਫਿਕੇਟ ਵੈਰੀਫਿਕੇਸ਼ਨ">ਸਰਟੀਫਿਕੇਟ ਵੈਰੀਫਿਕੇਸ਼ਨ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+         <h3 data-en="Reach Us" data-pa="ਸੰਪਰਕ ਪਤਾ">ਸੰਪਰਕ ਪਤਾ</h3>
+         <p data-en="Megh Colony, Nabha" data-pa="ਮੇਘ ਕਲੋਨੀ, ਨਾਭਾ">ਮੇਘ ਕਲੋਨੀ, ਨਾਭਾ</p>
+         <p>+91 98145-90408</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+       <span data-en="&copy; 2026 Komal Creations. All rights reserved." data-pa="&copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼। ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।">
+         &copy; 2026 ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼। ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।
+       </span>
+    </div>
+  </footer>
+
+  <!-- Script logic in pure module style -->
+  <script type="module" src="js/language.js"></script>
+  <script type="module">
+    import { supabase } from './js/supabase-config.js';
+    import { $ } from './js/utils.js';
+
+    // UI elements
+    const statusBadge = $('#status-badge');
+    const statusHeading = $('#status-heading');
+    const statusDesc = $('#status-desc');
+    const infoBox = $('#info-box');
+    const studentNameEl = $('#info-student-name');
+    const studentEmailEl = $('#info-student-email');
+    const homeBtn = $('#home-btn');
+    const contactBtn = $('#contact-btn');
+
+    const isEn = (localStorage.getItem('komal_creations_lang') || 'pa') === 'en';
+
+    function setUIState(type, headingEn, headingPa, descEn, descPa) {
+      if (type === 'success') {
+        statusBadge.textContent = '✔️';
+        statusBadge.className = 'status-badge-ok';
+        statusHeading.textContent = isEn ? headingEn : headingPa;
+        statusHeading.setAttribute('data-en', headingEn);
+        statusHeading.setAttribute('data-pa', headingPa);
+        statusDesc.textContent = isEn ? descEn : descPa;
+        statusDesc.setAttribute('data-en', descEn);
+        statusDesc.setAttribute('data-pa', descPa);
+        homeBtn.style.display = 'inline-block';
+        contactBtn.style.display = 'none';
+      } else if (type === 'partial_success') {
+        statusBadge.textContent = '⚠️';
+        statusBadge.className = 'status-badge-loading';
+        statusHeading.textContent = isEn ? headingEn : headingPa;
+        statusHeading.setAttribute('data-en', headingEn);
+        statusHeading.setAttribute('data-pa', headingPa);
+        statusDesc.textContent = isEn ? descEn : descPa;
+        statusDesc.setAttribute('data-en', descEn);
+        statusDesc.setAttribute('data-pa', descPa);
+        homeBtn.style.display = 'inline-block';
+        contactBtn.style.display = 'inline-block';
+      } else {
+        statusBadge.textContent = '❌';
+        statusBadge.className = 'status-badge-err';
+        statusHeading.textContent = isEn ? headingEn : headingPa;
+        statusHeading.setAttribute('data-en', headingEn);
+        statusHeading.setAttribute('data-pa', headingPa);
+        statusDesc.textContent = isEn ? descEn : descPa;
+        statusDesc.setAttribute('data-en', descEn);
+        statusDesc.setAttribute('data-pa', descPa);
+        homeBtn.style.display = 'inline-block';
+        contactBtn.style.display = 'inline-block';
+      }
+    }
+
+    async function handleVerification() {
+      // 1. Check URL query parameters for token_hash (newest Supabase format)
+      const params = new URLSearchParams(window.location.search);
+      const tokenHash = params.get('token_hash');
+      const type = params.get('type') || 'signup';
+
+      // 2. Check URL hash fragments for access_token or error (older Supabase format)
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      const hashError = hashParams.get('error');
+      const hashErrorDesc = hashParams.get('error_description');
+
+      console.log("Analyzing Confirm.html route details:");
+      console.log("Query Params:", { tokenHash, type });
+      console.log("Hash Params:", { accessToken, hasError: !!hashError, errorDesc: hashErrorDesc });
+
+      try {
+        let authSuccess = false;
+
+        // CASE C: error in hash
+        if (hashError) {
+          throw new Error(hashErrorDesc || hashError);
+        }
+
+        // CASE A: token_hash in query params
+        if (tokenHash) {
+          console.log("Found token_hash query parameter, verifying OTP with Supabase...");
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type
+          });
+          
+          if (error) {
+            throw error;
+          }
+          authSuccess = true;
+          console.log("OTP verification success:", data);
+        }
+
+        // CASE B: access_token in hash
+        else if (accessToken) {
+          console.log("Found access_token in hash fragment, setting session with Supabase...");
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || ''
+          });
+
+          if (error) {
+            throw error;
+          }
+          authSuccess = true;
+          console.log("Session set success:", data);
+        }
+
+        // CASE D: nothing in URL - double-check if there is an active session before failing
+        else {
+          console.log("No explicit token in URL. Checking existing session state...");
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session && session.user) {
+            authSuccess = true;
+            console.log("Recovered valid active session for user:", session.user.email);
+          }
+        }
+
+        if (!authSuccess) {
+          throw new Error("No enrollment token detected in the URL. Please verify your email connection or register again.");
+        }
+
+        // 4. Update Database on successful verification
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session && session.user) {
+          const userEmail = session.user.email;
+          const userId = session.user.id;
+
+          console.log("Authenticated user verified! Fetching student by email:", userEmail);
+
+          // Find student by email
+          const { data: studentList, error: findError } = await supabase
+            .from('students')
+            .select('*')
+            .eq('email', userEmail.toLowerCase().trim());
+
+          if (findError) {
+            console.error("Error querying student list:", findError);
+          }
+
+          const student = (studentList && studentList.length > 0) ? studentList[0] : null;
+
+          if (student) {
+            console.log("Updating student status in DB for student ID:", student.id);
+            // Update student verified status
+            const { error: studentUpdateErr } = await supabase
+              .from('students')
+              .update({
+                email_verified: true,
+                verification_status: 'verified',
+                auth_user_id: userId
+              })
+              .eq('id', student.id);
+
+            if (studentUpdateErr) {
+              console.error("Student status update query error:", studentUpdateErr);
+            }
+
+            // Update enrollment status
+            console.log("Updating enrollment status in DB for student ID:", student.id);
+            const { error: enrollUpdateErr } = await supabase
+              .from('enrollments')
+              .update({
+                status: 'Active',
+                course_status: 'Active'
+              })
+              .eq('student_id', student.id);
+
+            if (enrollUpdateErr) {
+              console.error("Enrollment status update query error:", enrollUpdateErr);
+            }
+
+            // Show student details
+            studentNameEl.textContent = student.full_name;
+            studentEmailEl.textContent = student.email;
+            infoBox.style.display = 'block';
+
+            // Sign out the student after verification (they don't need to stay logged in)
+            await supabase.auth.signOut();
+            console.log("Signed out user session for security.");
+
+            setUIState(
+              'success',
+              'Email Verified Successfully!',
+              'ਈਮੇਲ ਸਫਲਤਾਪੂਰਵਕ ਵੈਰੀਫਾਈ ਹੋ ਗਈ ਹੈ!',
+              'Your enrollment is now active. Class seats are officially reserved. Welcome to Komal Creations!',
+              'ਤੁਹਾਡਾ ਦਾਖਲਾ ਹੁਣ ਚਾਲੂ (Active) ਹੋ ਗਿਆ ਹੈ। ਤੁਹਾਡੀ ਸੀਟ ਪੱਕੀ ਹੋ ਗਈ ਹੈ। ਕੋਮਲ ਕ੍ਰਿਏਸ਼ਨਜ਼ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ!'
+            );
+          } else {
+            // Student verified in auth but not found in students table
+            // This means Bug 1 occurred previously or the email does not match
+            setUIState(
+              'partial_success',
+              'Email Verified (Data Missing)',
+              'ਈਮੇਲ ਵੈਰੀਫਾਈ ਹੋਈ (ਡੇਟਾ ਨਹੀਂ ਮਿਲਿਆ)',
+              'Authentication verified successfully, but our team could not locate your enrollment records. Please contact +91 98145-90408 to complete your file.',
+              'ਤੁਹਾਡੀ ਈਮੇਲ ਵੈਰੀਫਾਈ ਹੋ ਗਈ ਹੈ, ਪਰ ਸਾਨੂੰ ਤੁਹਾਡਾ ਦਾਖਲਾ ਰਿਕਾਰਡ ਨਹੀਂ ਮਿਲਿਆ। ਦਾਖਲਾ ਪੂਰਾ ਕਰਨ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਸਾਡੇ ਨਾਲ ਫ਼ੋਨ ' + +91 + " 98145-90408 'ਤੇ ਸੰਪਰਕ ਕਰੋ।"
+            );
+          }
+        } else {
+          throw new Error("Could not fetch authenticated session details from Supabase.");
+        }
+
+      } catch (err) {
+        console.error("Verification process failed:", err);
+        setUIState(
+          'error',
+          'Verification Failed',
+          'ਵੈਰੀਫਿਕੇਸ਼ਨ ਅਸਫਲ',
+          err.message || 'An error occurred while communicating with the registration servers.',
+          err.message || 'ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਸਰਵਰਾਂ ਨਾਲ ਸੰਪਰਕ ਸਥਾਪਤ ਕਰਨ ਦੌਰਾਨ ਕੋਈ ਗਲਤੀ ਹੋਈ ਹੈ।'
+        );
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Small timeout to give DOM translation loaded state a frame
+      setTimeout(handleVerification, 300);
+    });
+  </script>
+</body>
+</html>

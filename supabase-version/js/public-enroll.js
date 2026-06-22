@@ -2,6 +2,7 @@
  * Public Course Enrollment Script
  * Handles student registration form submissions.
  * Performs sequential insertions: first registers student, then creates course enrollment record.
+ * Refactored to prioritize database saving before auth signup.
  */
 
 import { supabase } from './supabase-config.js';
@@ -45,19 +46,22 @@ async function handleEnrollmentSubmit(e) {
   const courseId = $('#enroll-course-select').value;
   const preferredLang = $('#enroll-pref-lang').value;
 
-  if (!name || !phone || !email || !address || !courseId) {
+  // Bilingual inline messages helper
+  const isEn = (localStorage.getItem('komal_creations_lang') || 'pa') === 'en';
+
+  // Improvement 3: Dynamic Form Validation
+  if (!name || name.length < 2) {
     showToast(
-      "Please fill out all required fields.",
-      "ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੀ ਲੋੜੀਂਦੀ ਜਾਣਕਾਰੀ ਦਰਜ ਕਰੋ।",
+      "Full name must be at least 2 characters.",
+      "ਪੂਰਾ ਨਾਮ ਘੱਟੋ-ਘੱਟ 2 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
       "error"
     );
     return;
   }
 
-  // Validate Indian Phone numbers (+91 limit or 10-digit formats)
   const phonePattern = /^[6-9]\d{9}$|^(\+91)[6-9]\d{9}$/;
   const cleanPhone = phone.replace(/[\s-]/g, ''); // strip spaces and hyphens
-  if (!phonePattern.test(cleanPhone)) {
+  if (!cleanPhone || !phonePattern.test(cleanPhone)) {
     showToast(
       "Invalid Phone. Please enter a valid 10-digit Indian WhatsApp number.",
       "ਗਲਤ ਫ਼ੋਨ ਨੰਬਰ। ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ 10-ਅੰਕਾਂ ਦਾ ਵਟਸਐਪ ਨੰਬਰ ਭਰੋ।",
@@ -66,12 +70,45 @@ async function handleEnrollmentSubmit(e) {
     return;
   }
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailPattern.test(email)) {
+    showToast(
+      "Please enter a valid email address.",
+      "ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਈਮੇਲ ਪਤਾ ਦਰਜ ਕਰੋ।",
+      "error"
+    );
+    return;
+  }
+
+  if (!address || address.length < 5) {
+    showToast(
+      "Please enter a valid residential address.",
+      "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਪੂਰਾ ਰਹਿਣ ਦਾ ਪਤਾ ਦਰਜ ਕਰੋ।",
+      "error"
+    );
+    return;
+  }
+
+  if (!courseId) {
+    showToast(
+      "Please select a stitching curriculum from the list.",
+      "ਕਿਰਪਾ ਕਰਕੇ ਸੂਚੀ ਵਿੱਚੋਂ ਕੋਰਸ ਦੀ ਚੋਣ ਕਰੋ।",
+      "error"
+    );
+    return;
+  }
+
+  // Improvement 2: Prevent double submission
   const submitBtn = $('#enroll-submit-btn');
   const originalBtnText = submitBtn.innerHTML;
   submitBtn.disabled = true;
-  submitBtn.innerHTML = 'Signing Up...';
+  
+  // Improvement 1: Show spinning / loading status
+  submitBtn.innerHTML = isEn 
+    ? '<span class="inline-block animate-spin mr-2">⏳</span> Processing your registration...' 
+    : '<span class="inline-block animate-spin mr-2">⏳</span> ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...';
 
-  // Store pending enrollment in localStorage to survive the redirect/email verification loop if anonymous writing is blocked
+  // Store metadata to localStorage for robust device backup
   try {
     localStorage.setItem('komal_pending_enrollment', JSON.stringify({
       name,
@@ -86,37 +123,106 @@ async function handleEnrollmentSubmit(e) {
   }
 
   try {
-    // 1. Check if student already exists in Supabase by email
-    let student = null;
-    let authUser = null;
-    
-    try {
-      const { data: existingStudents, error: findError } = await supabase
-        .from('students')
-        .select('*')
-        .eq('email', email);
-      
-      if (!findError && existingStudents && existingStudents.length > 0) {
-        student = existingStudents[0];
-        console.log("Found existing student record with email:", email);
-      }
-    } catch (findErr) {
-      console.warn("Error checking for existing student:", findErr);
+    // STEP 1: Check for duplicate email in students table to prevent duplicates
+    const { data: existingStudent, error: findError } = await supabase
+      .from('students')
+      .select('*')
+      .eq('email', email.toLowerCase().trim());
+
+    if (existingStudent && existingStudent.length > 0) {
+      showToast(
+        "This email is already registered. Please use a different email or contact admin.",
+        "ਇਹ ਈਮੇਲ ਪਹਿਲਾਂ ਹੀ ਰਜਿਸਟਰਡ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਦੂਜੀ ਈਮੇਲ ਵਰਤੋ ਜਾਂ ਸੰਪਰਕ ਕਰੋ।",
+        "error"
+      );
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+      return;
     }
 
-    // 2. Send Supabase Auth signUp to trigger automatic verification email
+    // STEP 2: Save student to database first (offline-first resilient logic)
+    const studentPayload = {
+      full_name: name,
+      phone: phone,
+      email: email.toLowerCase().trim(),
+      address: address,
+      email_verified: false,
+      verification_status: 'pending'
+    };
+
+    const { data: studentData, error: studentErrorContent } = await supabase
+      .from('students')
+      .insert([studentPayload])
+      .select();
+
+    if (studentErrorContent || !studentData || studentData.length === 0) {
+      const errMessage = studentErrorContent ? studentErrorContent.message : "No database rows returned";
+      console.error('Student insert database error:', studentErrorContent);
+      showToast(
+        `Database registration failed: ${errMessage}`,
+        `ਡਾਟਾਬੇਸ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਅਸਫਲ ਰਹੀ: ${errMessage}`,
+        "error"
+      );
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+      return;
+    }
+
+    const studentRecord = studentData[0];
+    console.log('Resilient student insertion saved successfully:', studentRecord);
+
+    // STEP 3: Insert enrollment record (with dual support for schemas: course_status & status)
+    const currentDate = new Date().toISOString().split('T')[0];
+    const enrollmentPayload = {
+      student_id: studentRecord.id,
+      course_id: courseId,
+      enrollment_date: currentDate,
+      started_at: currentDate,
+      fee_status: 'Pending',
+      status: 'Pending Verification',
+      course_status: 'Pending Verification'
+    };
+
+    const { error: enrollError } = await supabase
+      .from('enrollments')
+      .insert([enrollmentPayload]);
+
+    if (enrollError) {
+      console.error('Enrollment insert database error:', enrollError);
+      showToast(
+        `Enrollment record writing failed: ${enrollError.message}`,
+        `ਦਾਖਲਾ ਰਿਕਾਰਡ ਲਿਖਣ ਵਿੱਚ ਅਸਫਲਤਾ: ${enrollError.message}`,
+        "error"
+      );
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+      return;
+    }
+
+    console.log('Enrollment record saved successfully in DB');
+
+    // STEP 4: Create Supabase Auth user for email verification last
+    let authUser = null;
+    const randomPassword = Math.random().toString(36).slice(-12) + 'Aa1!';
+    
+    // Dynamic redirect URL that works on localhost, AI Studio preview, and production GitHub Pages
+    const origin = window.location.origin;
+    const path = window.location.pathname;
+    const baseHref = origin + path.substring(0, path.lastIndexOf('/'));
+    const verifyRedirectUrl = baseHref.includes('localhost') || baseHref.includes('run.app')
+      ? `${baseHref}/confirm.html?email=${encodeURIComponent(email)}`
+      : 'https://komalcreation.github.io/web/confirm.html';
+
     try {
-      const baseHref = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-      const verifyRedirectUrl = `${baseHref}/verify.html?email=${encodeURIComponent(email)}`;
-      
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: email,
-        password: 'KomalStudentPassword123!',
+        email: email.toLowerCase().trim(),
+        password: randomPassword,
         options: {
           emailRedirectTo: verifyRedirectUrl,
           redirectTo: verifyRedirectUrl,
           data: {
             full_name: name,
+            student_id: studentRecord.id,
             phone: phone,
             address: address,
             course_id: courseId,
@@ -124,135 +230,31 @@ async function handleEnrollmentSubmit(e) {
           }
         }
       });
+
       if (signUpError) {
-        console.warn("Supabase Auth signUp registration warning:", signUpError.message);
+        console.warn("Supabase Auth email sign up skipped or triggered warning:", signUpError.message);
       } else {
         authUser = signUpData.user;
+        console.log("Supabase Auth signup completed:", authUser);
       }
     } catch (authErr) {
-      console.warn("Auth signup failed or skipped:", authErr);
+      console.warn("Resilient auth sign up error caught:", authErr);
     }
 
-    // 3. Insert student record into Supabase if they don't already exist
-    if (!student) {
-      const studentPayload = {
-        full_name: name,
-        phone: phone,
-        email: email,
-        address: address,
-        email_verified: false,
-        verification_status: 'pending'
-      };
-      
-      if (authUser && authUser.id) {
-        studentPayload.auth_user_id = authUser.id;
-      }
-
-      let insertRes = await supabase
-        .from('students')
-        .insert([studentPayload])
-        .select();
-
-      // Handle PostgreSQL undefined_column code ('42703') or keyword-based errors
-      if (insertRes.error && (insertRes.error.code === '42703' || insertRes.error.message.includes('column'))) {
-        console.warn("Initial student insert failed due to column incompatibilities. Retrying with essential columns...", insertRes.error.message);
-        const essentialPayload = {
-          full_name: name,
-          phone: phone,
-          email: email,
-          address: address
-        };
-        insertRes = await supabase
+    // STEP 5: Update student with auth_user_id if signup returns it
+    if (authUser && authUser.id) {
+      try {
+        await supabase
           .from('students')
-          .insert([essentialPayload])
-          .select();
-      }
-
-      const insertedStudent = (insertRes.data && insertRes.data.length > 0) ? insertRes.data[0] : null;
-      let studentError = insertRes.error;
-
-      if (studentError) {
-        console.error("Inserting new student row failed:", studentError);
-        // Fallback trace to query again in case of race condition or custom backend triggers
-        const { data: retryList } = await supabase
-          .from('students')
-          .select('*')
-          .eq('email', email);
-        if (retryList && retryList.length > 0) {
-          student = retryList[0];
-        } else {
-          throw studentError;
-        }
-      } else if (insertedStudent) {
-        student = insertedStudent;
-      } else {
-        // Fallback trace if no error but also no direct record returned
-        const { data: retryList } = await supabase
-          .from('students')
-          .select('*')
-          .eq('email', email);
-        if (retryList && retryList.length > 0) {
-          student = retryList[0];
-        } else {
-          throw new Error("Could not retrieve inserted student record.");
-        }
-      }
-    } else {
-      // If student existed, update their details with the newly submitted values and link user ID if newly grabbed
-      const updatePayload = {
-        full_name: name,
-        phone: phone,
-        address: address
-      };
-      if (authUser && authUser.id) {
-        updatePayload.auth_user_id = authUser.id;
-      }
-      
-      let updateRes = await supabase
-        .from('students')
-        .update(updatePayload)
-        .eq('id', student.id)
-        .select();
-
-      // Safe update retry fallback for column incompatibilities
-      if (updateRes.error && (updateRes.error.code === '42703' || updateRes.error.message.includes('column'))) {
-        console.warn("Student update failed due to column incompatibilities. Retrying with essential columns...", updateRes.error.message);
-        const essentialPayload = {
-          full_name: name,
-          phone: phone,
-          address: address
-        };
-        updateRes = await supabase
-          .from('students')
-          .update(essentialPayload)
-          .eq('id', student.id)
-          .select();
-      }
-        
-      if (!updateRes.error && updateRes.data && updateRes.data.length > 0) {
-        student = updateRes.data[0];
+          .update({ auth_user_id: authUser.id })
+          .eq('id', studentRecord.id);
+        console.log('Student record updated with auth_user_id:', authUser.id);
+      } catch (updateErr) {
+        console.warn("Could not bind auth_user_id immediately, will complete during verification url redirection.", updateErr);
       }
     }
 
-    // 4. Insert enrollment record into Supabase
-    const { error: enrollError } = await supabase
-      .from('enrollments')
-      .insert([
-        {
-          student_id: student.id,
-          course_id: courseId,
-          fee_status: 'pending',
-          course_status: 'Pending Verification',
-          started_at: new Date().toISOString().split('T')[0]
-        }
-      ]);
-
-    if (enrollError) {
-      console.error("Inserting enrollment record failed:", enrollError);
-      throw enrollError;
-    }
-
-    // 5. Synchronize with local server file-database
+    // STEP 6: Synchronize with Local file system backup DB
     try {
       await fetch('/api/public/enroll', {
         method: 'POST',
@@ -267,28 +269,100 @@ async function handleEnrollmentSubmit(e) {
         })
       });
     } catch (syncErr) {
-      console.warn("Server file data sync warning:", syncErr);
+      console.warn("Server backend json database syncing note:", syncErr);
     }
 
-    // Report success for verification email
+    // STEP 7: Show beautiful enrollment success states dynamically (Improvement 4)
+    const originalForm = document.getElementById('enroll-form');
+    if (originalForm) {
+      // Create beautifully styled registration state panel
+      const successPanel = document.createElement('div');
+      successPanel.className = 'verify-box'; // shares styles with verification panel
+      successPanel.style.padding = '3rem';
+      successPanel.style.background = '#ffffff';
+      successPanel.style.borderRadius = '12px';
+      successPanel.style.boxShadow = '0 10px 30px rgba(14, 75, 58, 0.08)';
+      successPanel.style.textAlign = 'center';
+      successPanel.style.border = '2px solid #0e4b3a';
+      successPanel.style.marginTop = '2rem';
+      successPanel.style.animation = 'fadeIn 0.6s ease-out';
+
+      successPanel.innerHTML = `
+        <div style="font-size: 5rem; color: #0e4b3a; margin-bottom: 1.5rem;" class="animate-bounce">✔️</div>
+        
+        <h3 class="font-serif text-3xl mb-4" style="color: #0e4b3a;" 
+            data-en="Registration Completed Successfully!" 
+            data-pa="ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਸਫਲਤਾਪੂਰਵਕ ਮੁਕੰਮਲ ਹੋ ਗਈ ਹੈ!">
+            ${isEn ? 'Registration Completed Successfully!' : 'ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਸਫਲਤਾਪੂਰਵਕ ਮੁਕੰਮਲ ਹੋ ਗਈ ਹੈ!'}
+        </h3>
+        
+        <p class="font-sans text-lg font-medium text-slate-800 mb-6" style="text-transform: capitalize;">
+          🎓 ${name}
+        </p>
+
+        <hr style="border-color: #fff4df; margin: 1.5rem 0;" />
+
+        <div style="text-align: left; background: #fff4df; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+          <p class="text-sm font-semibold mb-2" style="color: #0e4b3a;" 
+             data-en="Next Steps to Confirm Your Practical Desk Sheet:" 
+             data-pa="ਦਾਖਲਾ ਪੱਕਾ ਕਰਨ ਲਈ ਅਗਲੇ ਕਦਮ:">
+             ${isEn ? 'Next Steps to Confirm Your Practical Desk Sheet:' : 'ਦਾਖਲਾ ਪੱਕਾ ਕਰਨ ਲਈ ਅਗਲੇ ਕਦਮ:'}
+          </p>
+          <ul class="text-xs text-slate-700 style-decimal" style="list-style-type: decimal; padding-left: 1.25rem; line-height: 1.6;">
+            <li data-en="We have sent an authentication verification email to: <strong>${email}</strong>" 
+                data-pa="ਅਸੀਂ <strong>${email}</strong> 'ਤੇ ਇੱਕ ਵੈਰੀਫਿਕੇਸ਼ਨ ਈਮੇਲ ਭੇਜੀ ਹੈ।">
+                ${isEn ? "We have sent an authentication verification email to <strong>" + email + "</strong>" : "ਅਸੀਂ <strong>" + email + "</strong> 'ਤੇ ਇੱਕ ਵੈਰੀਫਿਕੇਸ਼ਨ ਈਮੇਲ ਭੇਜੀ ਹੈ।"}
+            </li>
+            <li data-en="Please open your inbox (and check the spam folder if not found within 1 minute)." 
+                data-pa="ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਇਨਬਾਕਸ ਖੋਲ੍ਹੋ (ਜੇਕਰ ਇਨਬਾਕਸ ਵਿੱਚ ਨਾ ਮਿਲੇ, ਤਾਂ ਸਪੈਮ ਫੋਲਡਰ ਚੈੱਕ ਕਰੋ)।">
+                ${isEn ? "Please open your inbox (and check the spam folder if not found within 1 minute)." : "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਇਨਬਾਕਸ ਖੋਲ੍ਹੋ (ਜੇਕਰ ਇਨਬਾਕਸ ਵਿੱਚ ਨਾ ਮਿਲੇ, ਤਾਂ ਸਪੈਮ ਫੋਲਡਰ ਚੈੱਕ ਕਰੋ)।"}
+            </li>
+            <li data-en="Click the validation verification link inside the email to instantly secure your seat!" 
+                data-pa="ਆਪਣੀ ਸੀਟ ਤੁਰੰਤ ਸੁਰੱਖਿਅਤ ਕਰਨ ਲਈ ਈਮੇਲ ਵਿੱਚ ਦਿੱਤੇ ਵੈਰੀਫਿਕੇਸ਼ਨ ਲਿੰਕ 'ਤੇ ਕਲਿੱਕ ਕਰੋ!">
+                ${isEn ? "Click the verification link inside the email to instantly secure and activate your seat!" : "ਆਪਣੀ ਸੀਟ ਤੁਰੰਤ ਸੁਰੱਖਿਅਤ ਕਰਨ ਲਈ ਈਮੇਲ ਵਿੱਚ ਦਿੱਤੇ ਵੈਰੀਫਿਕੇਸ਼ਨ ਲਿੰਕ 'ਤੇ ਕਲਿੱਕ ਕਰੋ!"}
+            </li>
+          </ul>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a href="index.html" class="btn btn-primary" style="background: #0e4b3a; color: #fff4df; border: none; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 6px;" 
+             data-en="Go to Home Page" data-pa="ਮੁੱਖ ਪੰਨਾ">
+             ${isEn ? 'Go to Home Page' : 'ਮੁੱਖ ਪੰਨਾ'}
+          </a>
+          <button id="reset-form-back" class="btn" style="background: transparent; color: #8b1f2f; border: 1px solid #8b1f2f; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer;"
+             data-en="Submit Another" data-pa="ਇੱਕ ਹੋਰ ਦਾਖਲ ਕਰੋ">
+             ${isEn ? 'Submit Another' : 'ਇੱਕ ਹੋਰ ਦਾਖਲ ਕਰੋ'}
+          </button>
+        </div>
+      `;
+
+      // Hide form and show success panel
+      originalForm.style.display = 'none';
+      originalForm.parentNode.appendChild(successPanel);
+
+      const resetBtn = document.getElementById('reset-form-back');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          successPanel.remove();
+          originalForm.reset();
+          originalForm.style.display = 'block';
+        });
+      }
+    }
+
     showToast(
-      "Registration requests saved! Please check your email to verify and confirm placement.",
-      "ਦਾਖਲਾ ਫਾਰਮ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਹੋ ਗਿਆ ਹੈ! ਆਪਣੀ ਸੀਟ ਪੱਕੀ ਕਰਨ ਲਈ ਫ਼ੋਨ ਜਾਂ ਈਮੇਲ ਵੈਰੀਫਿਕੇਸ਼ਨ ਚੈੱਕ ਕਰੋ।",
+      "Registration saved! Please check your email inbox to verify enrollment.",
+      "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਸਫਲ! ਆਪਣੀ ਸੀਟ ਪੱਕੀ ਕਰਨ ਲਈ ਆਪਣੀ ਈਮੇਲ ਵੈਰੀਫਾਈ ਕਰੋ।",
       "success"
     );
 
-    // Reset Form fields
-    $('#enroll-form').reset();
   } catch (err) {
-    console.error("Supabase sequential insertion failed detailed log: ", err);
-    
-    // Fallback Mock simulation for presentation
+    console.error("Enrollment flow exception details:", err);
     showToast(
-      "Enrollment recorded! Check your email to verify and contact Komalpreet Kaur directly.",
-      "ਦਾਖਲਾ ਸਫਲਤਾਪੂਰਵਕ ਰਿਕਾਰਡ ਹੋ ਗਿਆ ਹੈ! ਕਿਰਪਾ ਕਰਕੇ ਤਸਦੀਕ ਲਈ ਆਪਣੀ ਈਮੇਲ ਚੈੱਕ ਕਰੋ।",
-      "success"
+      "An unexpected error occurred. Please try again or contact support.",
+      "ਕੋਈ ਅਣਪਛਾਤੀ ਗਲਤੀ ਆਈ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ ਜਾਂ ਸਿੱਧਾ ਸੰਪਰਕ ਕਰੋ।",
+      "error"
     );
-    $('#enroll-form').reset();
   } finally {
     submitBtn.disabled = false;
     submitBtn.innerHTML = originalBtnText;
@@ -299,7 +373,7 @@ async function handleEnrollmentSubmit(e) {
 document.addEventListener('DOMContentLoaded', () => {
   populateCourseDropdown();
 
-  const form = $('#enroll-form');
+  const form = document.getElementById('enroll-form');
   if (form) {
     form.addEventListener('submit', handleEnrollmentSubmit);
   }
