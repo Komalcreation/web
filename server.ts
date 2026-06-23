@@ -578,7 +578,8 @@ async function startServer() {
       db.enrollments[idx] = {
         ...db.enrollments[idx],
         fee_status: fee_status || db.enrollments[idx].fee_status,
-        status: status || db.enrollments[idx].status
+        status: status || db.enrollments[idx].status,
+        course_status: status || db.enrollments[idx].course_status || db.enrollments[idx].status
       };
 
       await writeDb(db);
